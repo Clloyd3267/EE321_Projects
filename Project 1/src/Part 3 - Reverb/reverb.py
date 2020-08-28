@@ -34,7 +34,7 @@ class AudioReverb:
         Returns:
             (0): No errors, (Anything else): Errors.
         """
-        
+
     def reverb(self, audioData):
         """
         Function to add reverb to audio.
@@ -45,3 +45,6 @@ class AudioReverb:
         Returns:
             (0): No errors, (Anything else): Errors.
         """
+
+if __name__ == "__main__":
+    print("Hello World!")        

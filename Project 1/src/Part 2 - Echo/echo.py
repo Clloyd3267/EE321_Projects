@@ -34,7 +34,7 @@ class AudioEcho:
         Returns:
             (0): No errors, (Anything else): Errors.
         """
-            
+
     def echo(self, audioData):
         """
         Function to add echo to audio.
@@ -45,3 +45,6 @@ class AudioEcho:
         Returns:
             (0): No errors, (Anything else): Errors.
         """
+
+if __name__ == "__main__":
+    print("Hello World!")
