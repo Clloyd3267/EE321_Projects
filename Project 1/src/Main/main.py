@@ -44,7 +44,7 @@ def main():
     """ 	
     print("hello world!")
 
-    #audio_folder = Path(../Audio Files)
+    #audio_folder = Path(..\..\Audio Files)
 
 if __name__ == "__main__":
     main()
