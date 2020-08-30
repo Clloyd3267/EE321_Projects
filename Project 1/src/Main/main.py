@@ -9,6 +9,7 @@
 # Imports
 import pydub 
 import numpy as np
+from pathlib import Path
 
 def read(f, normalized=False):
     """MP3 to numpy array"""
@@ -42,6 +43,8 @@ def main():
     Returns:    (None)
     """ 	
     print("hello world!")
+
+    #audio_folder = Path(../Audio Files)
 
 if __name__ == "__main__":
     main()
