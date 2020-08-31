@@ -52,7 +52,6 @@ def addReverbAudio(audioSegmentStereo, numberOfEchos, gainStep, delay):
 
     return out
 
-
 def main():
     """
     Main function to demo audio effects including:
@@ -85,6 +84,8 @@ def main():
     #     return a.frame_rate, np.float32(y) / 2**15
     # else:
     #     return a.frame_rate, y         
+
+    #audio_folder = Path(..\..\Audio Files)
 
 if __name__ == "__main__":
     main()
