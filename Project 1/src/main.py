@@ -52,10 +52,8 @@ def main():
     Parameters: (None)
     Returns:    (None)
     """ 	
-    inAudio = importAudio("..\\..\\Audio Files\\HEY.mp3")
 
     # CDL=> Do stuff here for final design, Not for testing!
-
 
 if __name__ == "__main__":
     main()
