@@ -7,8 +7,14 @@
 ################################################################################
 
 # Imports
-import pydub 
+# TODO move import statements and functions to separate files
+import urllib.request
+import time
+import pydub
 import numpy as np
+
+from pydub import AudioSegment
+from pydub.playback import play
 
 def read(f, normalized=False):
     """MP3 to numpy array"""
@@ -31,17 +37,36 @@ def write(f, sr, x, normalized=False):
     song = pydub.AudioSegment(y.tobytes(), frame_rate=sr, sample_width=2, channels=channels)
     song.export(f, format="mp3", bitrate="320k")
 
+def delay(delayPeriod, audioData):
+    audioData = np.insert(X, 0, 0, axis=0)
+
+    #create for loop to prepend zeros to the numpy array
+    return audioData    #return delayed numpy array
+
 def main():
+
+    #temporary section to demonstrate loading files
+    #read file in to numpy array
+    audio = read("HEY.mp3") #KAB this currently works and creates a numpy get_array_of_samples
+    #KAB would be nice to have a play function call from pydub here to play the original file
+
+    #create delay on sound file
+    delay(audio)
+
     """
     Main function to demo audio effects including:
     - Delay
     - Echo
     - Reverb
-    
+
     Parameters: (None)
     Returns:    (None)
-    """ 	
+    """
     print("hello world!")
 
-if __name__ == "__main__":
-    main()
+    time.sleep(5)
+
+main()
+
+#if __name__ == "__main__":
+ #   main()
