@@ -37,21 +37,28 @@ def write(f, sr, x, normalized=False):
     song = pydub.AudioSegment(y.tobytes(), frame_rate=sr, sample_width=2, channels=channels)
     song.export(f, format="mp3", bitrate="320k")
 
-def delay(delayPeriod, audioData):
-    audioData = np.insert(X, 0, 0, axis=0)
+def delay(delayPeriod, sampleRate, audioData):
+    zeros = delayPeriod * sampleRate    #compute number of zeros to prepend to numpy array
 
-    #create for loop to prepend zeros to the numpy array
+    #prepend zeros to numpy array to cause delay for x seconds
+    for x in range(zeros):
+        audioData = np.insert(audioData, 0, x, axis=0)
+
     return audioData    #return delayed numpy array
 
 def main():
 
     #temporary section to demonstrate loading files
     #read file in to numpy array
-    audio = read("HEY.mp3") #KAB this currently works and creates a numpy get_array_of_samples
+    frameRate, audio = read("HEY.mp3") #KAB this currently works and creates a numpy get_array_of_samples
     #KAB would be nice to have a play function call from pydub here to play the original file
+    # for x in audio:
+    #     print(x)
+    #create delayed array for sound file
+    audio = delay(1, frameRate, audio)
 
-    #create delay on sound file
-    delay(audio)
+    #create new sound file from numpy array
+    write('HEY_Delay.mp3', frameRate, audio)
 
     """
     Main function to demo audio effects including:
