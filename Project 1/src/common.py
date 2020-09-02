@@ -94,5 +94,5 @@ if __name__ == "__main__":
     outFilePath = Path("../Audio Files/HEY_new.mp3")
     sampleRate, testAudioData = importMP3Audio(inFilePath, True)
     print("Audio Imported Successfully...")
-    testAudio = exportMP3Audio(outFilePath, testAudioData, sampleRate, True)
+    exportMP3Audio(outFilePath, testAudioData, sampleRate, True)
     print("Audio Exported Successfully...")
