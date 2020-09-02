@@ -38,8 +38,8 @@ def importMP3Audio(audioFileName, normalized=False):
     audioSegmentStereo = pydub.AudioSegment.from_mp3(audioFileName)
     audioNpArray = np.array(audioSegmentStereo.get_array_of_samples())
 
-    # If stereo (2 channel), Split 1D array to 2 rows and N columns depending
-    # on the number of samples.
+    # If stereo (2 channel), Split 1D array to 2 columns and N rows depending
+    # on the number of samples N.
     if audioSegmentStereo.channels == 2:
         audioNpArray = audioNpArray.reshape((-1, 2))
     
