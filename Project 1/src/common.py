@@ -12,11 +12,6 @@ import pydub
 import numpy as np
 from pathlib import Path
 
-# CDL=> How do we deal with stereo/mono? Do we want all audio tracks to be 
-#       treated as a single channel mono and just operate on one? Or should we 
-#       deal with stereo also? 
-# CDL=> Seems like we just use mono audio which needs to be changed
-
 def importMP3Audio(audioFileName, normalized=False):
     """
     Function to import audio from an MP3 file and convert it to a Numpy array.
@@ -37,11 +32,6 @@ def importMP3Audio(audioFileName, normalized=False):
 
     audioSegmentStereo = pydub.AudioSegment.from_mp3(audioFileName)
     audioNpArray = np.array(audioSegmentStereo.get_array_of_samples())
-
-    # If stereo (2 channel), Split 1D array to 2 columns and N rows depending
-    # on the number of samples N.
-    if audioSegmentStereo.channels == 2:
-        audioNpArray = audioNpArray.reshape((-1, 2))
     
     # If user specifies normalized data, reformat to floats between (-1 and +1)
     if normalized:
@@ -68,9 +58,6 @@ def exportMP3Audio(audioFileName, audioNpArray, sampleRate, normalized=False):
     Returns: (none)
     """
     
-    # Adjust for Stereo or Mono Audio
-    channels = 2 if (audioNpArray.ndim==2 and audioNpArray.shape[1]==2) else 1
-    
     # If user specifies normalized data, adjust from floats between
     # (-1 and +1) to 16-bit data (-2^15 to +2^15)    
     if normalized:
@@ -82,7 +69,7 @@ def exportMP3Audio(audioFileName, audioNpArray, sampleRate, normalized=False):
     audioSegmentStereo = pydub.AudioSegment(audioNpArray.tobytes(), 
                                             frame_rate=sampleRate, 
                                             sample_width=2, 
-                                            channels=channels)
+                                            channels=1)
     # Export the AudioSegment object to the specified file
     audioSegmentStereo.export(audioFileName, format="mp3", bitrate="320k")
 

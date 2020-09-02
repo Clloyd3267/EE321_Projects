@@ -8,7 +8,7 @@
 ################################################################################
 
 # Imports
-from common import * # CDL=> Remove later, only for testing!
+from common import *  # Only for testing!
 import numpy as np
 
 def delay(audioData, sampleRate=44100, delayTimeSec=1):
@@ -25,13 +25,10 @@ def delay(audioData, sampleRate=44100, delayTimeSec=1):
     """    
     
     # Compute number of zeros to prepend to numpy array
-    zeros = delayTimeSec * sampleRate    
+    numZeros = delayTimeSec * sampleRate    
 
-    # Prepend zeros to numpy array to cause delay for (delayTimeSec) seconds
-    for x in range(zeros):
-        audioData = np.insert(audioData, 0, x, axis=0)
-
-    return audioData  # Return delayed numpy array
+    # Return delayed numpy array
+    return np.concatenate((np.zeros(numZeros), audioData))  
 
 # Main code for this file
 if __name__ == "__main__":
