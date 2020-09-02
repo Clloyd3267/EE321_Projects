@@ -43,18 +43,6 @@ from reverb import *
 #     exportAudio(reverbedAudio, "..\\..\\Audio Files\\HEY_2reverb.mp3")
 
 def main():
-    ######################Kyle Bielby: added delay function calls to main#################
-    #read file in to numpy array
-    frameRate, audio = read("HEY.mp3") #KAB this currently works and creates a numpy get_array_of_samples
-
-    #create delayed array for sound file
-    audio = delay(1, frameRate, audio)
-
-    #create new sound file from numpy array
-    write('HEY_Delay.mp3', frameRate, audio)
-
-    time.sleep(5)   #KAB temporary delay function so that I can actually see things
-    #######################Kyle Bielby: end of Kyle's contributions#########################
     """
     Main function to demo audio effects including:
     - Delay
