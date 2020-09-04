@@ -3,7 +3,7 @@
 # Author(s)   : Kyle Bielby, Chris Lloyd, Stephen Epp, Philip Hubbe
 # Class       : EE321 (Project 1)
 # Due Date    : 2020-09-18
-# Description : Functions to add delay to an audio sample stored in a numpy 
+# Description : Functions to add delay to an audio sample stored in a Numpy 
 #               array.
 ################################################################################
 
@@ -13,7 +13,7 @@ import numpy as np
 
 def delay(audioData, sampleRate=44100, delayTimeSec=1):
     """
-    Function to add delay to audio data stored in a numpy array.
+    Function to add delay to audio data stored in a Numpy array.
 
     Parameters:
         audioData    (Numpy array): Numpy array that represents audio data.
@@ -24,6 +24,8 @@ def delay(audioData, sampleRate=44100, delayTimeSec=1):
         (Numpy array): Numpy array that represents audio data with added delay.
     """    
     
+    # CDL=> Add validation for inputs
+
     # Compute number of zeros to prepend to numpy array
     numZeros = delayTimeSec * sampleRate    
 
