@@ -32,17 +32,18 @@ def delay(audioData, sampleRate=44100, delayTimeSec=1):
     # Return delayed numpy array
     return np.concatenate((np.zeros(numZeros), audioData))  
 
+
 # Main code for this file
 if __name__ == "__main__":
     # Simple test to add delay to audio sample
     print("=> Audio delay for 1 second test: ")
     inFilePath = Path("../Audio Files/HEY.mp3")
-    outFilePath = Path("../Audio Files/HEY_delayed_1_second.mp3")
+    outFilePath = Path("../Audio Files/TEST_HEY_delayed_1_second.mp3")
     delayTimeSec = 1
     sampleRate, audioData = importMP3Audio(inFilePath, True)
     print("Audio Imported Successfully...")
     delayedAudioData = delay(audioData, sampleRate, delayTimeSec)
     print("Audio Delayed Successfully...")
-    testAudio = exportMP3Audio(outFilePath, delayedAudioData, sampleRate, True)
+    exportMP3Audio(outFilePath, delayedAudioData, sampleRate, True)
     print("Audio Exported Successfully...")
 

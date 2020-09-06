@@ -33,17 +33,18 @@ def echo(audioData, numberOfEchos, gain = 0.5):
         outAudio = np.append(outAudio, (audioData * (gain ** (echoNumber+1))))
     return outAudio
 
+
 # Main code for this file
 if __name__ == "__main__":
     # Simple test to add echoes to audio sample
     print("=> Audio 2 echo's test: ")
     inFilePath = Path("../Audio Files/HEY.mp3")
-    outFilePath = Path("../Audio Files/HEY_2_echos.mp3")
+    outFilePath = Path("../Audio Files/TEST_HEY_2_echos.mp3")
     numEchos = 2
     gainChange = 0.7
     sampleRate, audioData = importMP3Audio(inFilePath, True)
     print("Audio Imported Successfully...")
     echoAudioData = echo(audioData, numEchos, gainChange)
     print("Audio Echoed Successfully...")
-    testAudio = exportMP3Audio(outFilePath, echoAudioData, sampleRate, True)
+    exportMP3Audio(outFilePath, echoAudioData, sampleRate, True)
     print("Audio Exported Successfully...")
