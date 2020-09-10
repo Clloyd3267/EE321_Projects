@@ -11,7 +11,7 @@
 from common import *  # Only for testing!
 import numpy as np
 
-def delay(audioData, sampleRate=44100, delayTimeSec=1):
+def delay(audioData, sampleRate, delayTimeSec):
     """
     Function to add delay to audio data stored in a Numpy array.
 
@@ -30,14 +30,14 @@ def delay(audioData, sampleRate=44100, delayTimeSec=1):
     numZeros = delayTimeSec * sampleRate    
 
     # Return delayed numpy array
-    return np.concatenate((np.zeros(numZeros), audioData))  
+    return np.concatenate((np.zeros(int(numZeros)), audioData))
 
 
 # Main code for this file
 if __name__ == "__main__":
     # Simple test to add delay to audio sample
     print("=> Audio delay for 1 second test: ")
-    inFilePath = Path("../Audio Files/HEY.mp3")
+    inFilePath = Path("../Audio Files/JUST_HEY.mp3")
     outFilePath = Path("../Audio Files/TEST_HEY_delayed_1_second.mp3")
     delayTimeSec = 1
     sampleRate, audioData = importMP3Audio(inFilePath, True)

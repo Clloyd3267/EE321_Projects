@@ -77,7 +77,7 @@ def exportMP3Audio(audioFileName, audioNpArray, sampleRate, normalized=False):
 if __name__ == "__main__":
     # Simple test to read in the audio file and write it back out
     print("=> Audio Imported/Export test: ")
-    inFilePath = Path("../Audio Files/HEY.mp3")
+    inFilePath = Path("../Audio Files/JUST_HEY.mp3")
     outFilePath = Path("../Audio Files/HEY_new.mp3")
     sampleRate, testAudioData = importMP3Audio(inFilePath, True)
     print("Audio Imported Successfully...")

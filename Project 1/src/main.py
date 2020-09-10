@@ -57,7 +57,7 @@ def main():
     ############################################################################
     # ============================> Import Audio <=============================#
     ############################################################################  
-    inPath = Path("../Audio Files/HEY.mp3")
+    inFilePath = Path("../Audio Files/JUST_HEY.mp3")
     sampleRate, originalAudioData = importMP3Audio(inPath, True)
 
     ############################################################################
@@ -174,8 +174,60 @@ def main():
     ############################################################################
     # ==========================> Add Reverb to Audio <========================#
     ############################################################################
-    # CDL=> Come back here later
 
+    # Get Audio with reverb
+    gainChange = 0.7
+    delayTimeSec = 0.1
+    reverb1AudioData = reverb(originalAudioData, 1, sampleRate, delayTimeSec, gainChange)
+    reverb2AudioData = reverb(originalAudioData, 2, sampleRate, delayTimeSec, gainChange)
+    reverb3AudioData = reverb(originalAudioData, 3, sampleRate, delayTimeSec, gainChange)
+
+    # Export Audio
+    reverb1OutPath = Path("../Audio Files/HEY_1_reverb.mp3")
+    reverb2OutPath = Path("../Audio Files/HEY_2_reverb.mp3")
+    reverb3OutPath = Path("../Audio Files/HEY_3_reverb.mp3")
+    exportMP3Audio(reverb1OutPath, reverb1AudioData, sampleRate, True)
+    exportMP3Audio(reverb2OutPath, reverb2AudioData, sampleRate, True)
+    exportMP3Audio(reverb3OutPath, reverb3AudioData, sampleRate, True)
+
+    # Create figure and plots
+    reverbFig, (originalAxes, 
+              reverb1Axes, 
+              reverb2Axes, 
+              reverb3Axes) = plt.subplots(4)
+    reverbFig.suptitle("Adding Reverb to an Audio Sample")
+    reverbFig.canvas.set_window_title("Adding Reverb to an Audio Sample")
+
+    # Set general plot settings for each subplot
+    for axe in [originalAxes, reverb1Axes, reverb2Axes, reverb3Axes]:
+        axe.set_xlabel("Time (s)")
+        axe.set_ylabel("Amplitude")
+        axe.set_xlim(0, 6)              # Set x axis from 0 - 6 seconds # CDL=> What value here? Variable?
+        axe.set_ylim(-1, 1)             # Set y axis from -1 to 1
+        axe.grid(True)
+
+    # Set plot titles
+    originalAxes.set_title("Original Audio")
+    reverb1Axes.set_title("Audio With 1 Reverb")
+    reverb2Axes.set_title("Audio With 2 Reverb Echoes")
+    reverb3Axes.set_title("Audio With 3 Reverb Echoes")
+
+    # Scale axis to time using sample rate
+    originalXAxis = np.arange(len(originalAudioData)) / sampleRate
+    reverb1XAxis  = np.arange(len(reverb1AudioData))  / sampleRate
+    reverb2XAxis  = np.arange(len(reverb2AudioData))  / sampleRate
+    reverb3XAxis  = np.arange(len(reverb3AudioData))  / sampleRate
+
+    # Add plot data
+    originalAxes.plot(originalXAxis, originalAudioData)
+    reverb1Axes.plot(reverb1XAxis, reverb1AudioData)
+    reverb2Axes.plot(reverb2XAxis, reverb2AudioData)
+    reverb3Axes.plot(reverb3XAxis, reverb3AudioData)
+    
+    # Figure settings
+    reverbFig.canvas.mpl_connect("button_press_event", expandPlotInNewFigure)
+    reverbFig.tight_layout()
+    
     # Show Figures
     plt.show()
 

@@ -28,7 +28,7 @@ def echo(audioData, numberOfEchos, gain = 0.5):
     # CDL=> Add validation for inputs
 
     # CDL=> Perhaps clean up logic to simplify
-    outAudio = audioData
+    outAudio = audioDataoutAudio = audioData.copy()
     for echoNumber in range(numberOfEchos):
         outAudio = np.append(outAudio, (audioData * (gain ** (echoNumber+1))))
     return outAudio
@@ -38,7 +38,7 @@ def echo(audioData, numberOfEchos, gain = 0.5):
 if __name__ == "__main__":
     # Simple test to add echoes to audio sample
     print("=> Audio 2 echo's test: ")
-    inFilePath = Path("../Audio Files/HEY.mp3")
+    inFilePath = Path("../Audio Files/JUST_HEY.mp3")
     outFilePath = Path("../Audio Files/TEST_HEY_2_echos.mp3")
     numEchos = 2
     gainChange = 0.7
