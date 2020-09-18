@@ -23,8 +23,6 @@ def delay(audioData, sampleRate, delayTimeSec):
     Returns:
         (Numpy array): Numpy array that represents audio data with added delay.
     """    
-    
-    # CDL=> Add validation for inputs
 
     # Compute number of zeros to prepend to numpy array
     numZeros = delayTimeSec * sampleRate    
@@ -37,13 +35,12 @@ def delay(audioData, sampleRate, delayTimeSec):
 if __name__ == "__main__":
     # Simple test to add delay to audio sample
     print("=> Audio delay for 1 second test: ")
-    inFilePath = Path("../Audio Files/JUST_HEY.mp3")
+    inFilePath = Path("../Audio Files/HEY.mp3")
     outFilePath = Path("../Audio Files/TEST_HEY_delayed_1_second.mp3")
     delayTimeSec = 1
-    sampleRate, audioData = importMP3Audio(inFilePath, True)
+    sampleRate, audioData = importMP3Audio(inFilePath)
     print("Audio Imported Successfully...")
     delayedAudioData = delay(audioData, sampleRate, delayTimeSec)
     print("Audio Delayed Successfully...")
-    exportMP3Audio(outFilePath, delayedAudioData, sampleRate, True)
+    exportMP3Audio(outFilePath, delayedAudioData, sampleRate)
     print("Audio Exported Successfully...")
-

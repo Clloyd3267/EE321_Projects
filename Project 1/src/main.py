@@ -57,8 +57,8 @@ def main():
     ############################################################################
     # ============================> Import Audio <=============================#
     ############################################################################  
-    inFilePath = Path("../Audio Files/JUST_HEY.mp3")
-    sampleRate, originalAudioData = importMP3Audio(inPath, True)
+    inFilePath = Path("../Audio Files/HEY.mp3")
+    sampleRate, originalAudioData = importMP3Audio(inFilePath)
 
     ############################################################################
     # ==========================> Add Delay to Audio <=========================#
@@ -70,12 +70,12 @@ def main():
     delayed3SecAudioData = delay(originalAudioData, sampleRate, 3)
 
     # Export Audio
-    delayed1SecOutPath = Path("../Audio Files/HEY_1sec_delay.mp3")
-    delayed2SecOutPath = Path("../Audio Files/HEY_2sec_delay.mp3")
-    delayed3SecOutPath = Path("../Audio Files/HEY_3sec_delay.mp3")
-    exportMP3Audio(delayed1SecOutPath, delayed1SecAudioData, sampleRate, True)
-    exportMP3Audio(delayed2SecOutPath, delayed2SecAudioData, sampleRate, True)
-    exportMP3Audio(delayed3SecOutPath, delayed3SecAudioData, sampleRate, True)
+    delayed1SecOutPath = Path("../Audio Files/HEY_1_sec_delay.mp3")
+    delayed2SecOutPath = Path("../Audio Files/HEY_2_sec_delay.mp3")
+    delayed3SecOutPath = Path("../Audio Files/HEY_3_sec_delay.mp3")
+    exportMP3Audio(delayed1SecOutPath, delayed1SecAudioData, sampleRate)
+    exportMP3Audio(delayed2SecOutPath, delayed2SecAudioData, sampleRate)
+    exportMP3Audio(delayed3SecOutPath, delayed3SecAudioData, sampleRate)
 
     # Create figure and plots
     delayFig, (originalAxes, 
@@ -129,9 +129,9 @@ def main():
     echo1OutPath = Path("../Audio Files/HEY_1_echos.mp3")
     echo2OutPath = Path("../Audio Files/HEY_2_echos.mp3")
     echo3OutPath = Path("../Audio Files/HEY_3_echos.mp3")
-    exportMP3Audio(echo1OutPath, echo1AudioData, sampleRate, True)
-    exportMP3Audio(echo2OutPath, echo2AudioData, sampleRate, True)
-    exportMP3Audio(echo3OutPath, echo3AudioData, sampleRate, True)
+    exportMP3Audio(echo1OutPath, echo1AudioData, sampleRate)
+    exportMP3Audio(echo2OutPath, echo2AudioData, sampleRate)
+    exportMP3Audio(echo3OutPath, echo3AudioData, sampleRate)
 
     # Create figure and plots
     echoFig, (originalAxes, 
@@ -183,12 +183,12 @@ def main():
     reverb3AudioData = reverb(originalAudioData, 3, sampleRate, delayTimeSec, gainChange)
 
     # Export Audio
-    reverb1OutPath = Path("../Audio Files/HEY_1_reverb.mp3")
-    reverb2OutPath = Path("../Audio Files/HEY_2_reverb.mp3")
-    reverb3OutPath = Path("../Audio Files/HEY_3_reverb.mp3")
-    exportMP3Audio(reverb1OutPath, reverb1AudioData, sampleRate, True)
-    exportMP3Audio(reverb2OutPath, reverb2AudioData, sampleRate, True)
-    exportMP3Audio(reverb3OutPath, reverb3AudioData, sampleRate, True)
+    reverb1OutPath = Path("../Audio Files/HEY_1_echoes_reverb.mp3")
+    reverb2OutPath = Path("../Audio Files/HEY_2_echoes_reverb.mp3")
+    reverb3OutPath = Path("../Audio Files/HEY_3_echoes_reverb.mp3")
+    exportMP3Audio(reverb1OutPath, reverb1AudioData, sampleRate)
+    exportMP3Audio(reverb2OutPath, reverb2AudioData, sampleRate)
+    exportMP3Audio(reverb3OutPath, reverb3AudioData, sampleRate)
 
     # Create figure and plots
     reverbFig, (originalAxes, 

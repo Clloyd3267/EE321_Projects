@@ -28,34 +28,13 @@ def reverb(audioData, numberOfEchos, sampleRate, delayTimeSec, gain):
     Returns:
         (Numpy array): Numpy array that represents audio data with added reverb.
     """    
-    
-    # CDL=> Add validation for inputs
 
-    # CDL=> Remove plotting later
-    fig = plt.figure()
     reverbAudioData = np.empty(0)
     for echoNumber in range(numberOfEchos):
-        delayedEchoAudioData = delay((audioData * (gain ** (echoNumber))), sampleRate, delayTimeSec * (echoNumber) )
+        delayedEchoAudioData = delay((audioData * (gain ** (echoNumber))), 
+                                     sampleRate, delayTimeSec * echoNumber)
         reverbAudioData.resize(delayedEchoAudioData.shape)
         reverbAudioData = reverbAudioData + delayedEchoAudioData
-        
-        # Plot overlay's
-        ax = fig.add_subplot(numberOfEchos + 1, 1, echoNumber + 2)
-        ax.set_xlim(0, 2)
-        ax.set_ylim(-0.5, 0.5)
-        ax.grid(True)
-        xAxis = np.arange(len(delayedEchoAudioData)) / sampleRate
-        ax.plot(xAxis, delayedEchoAudioData)
-
-    # Plot final reverb'd audio
-    ax = fig.add_subplot(numberOfEchos + 1, 1, 1)
-    ax.set_xlim(0, 2)
-    ax.set_ylim(-0.5, 0.5)
-    ax.grid(True)
-    xAxis = np.arange(len(reverbAudioData)) / sampleRate
-    ax.plot(xAxis, reverbAudioData)
-    fig.tight_layout()
-    plt.show()
 
     return reverbAudioData
 
@@ -64,15 +43,15 @@ def reverb(audioData, numberOfEchos, sampleRate, delayTimeSec, gain):
 if __name__ == "__main__":
     # Simple test to add reverb to audio sample
     print("=> Audio reverb test: ")
-    inFilePath = Path("../Audio Files/JUST_HEY.mp3")
+    inFilePath = Path("../Audio Files/HEY.mp3")
     outFilePath = Path("../Audio Files/TEST_HEY_reverb.mp3")
-    sampleRate, audioData = importMP3Audio(inFilePath, True)
+    sampleRate, audioData = importMP3Audio(inFilePath)
     print("Audio Imported Successfully...")
-    numberOfEchos 5
+    numberOfEchos = 5
     delayTimeSec = 0.3
     gain = 0.5
     reverbedAudioData = reverb(audioData, numberOfEchos, sampleRate, delayTimeSec, gain)
     print("Audio Reverbed Successfully...")
-    exportMP3Audio(outFilePath, reverbedAudioData, sampleRate, True)
+    exportMP3Audio(outFilePath, reverbedAudioData, sampleRate)
     print("Audio Exported Successfully...")
 

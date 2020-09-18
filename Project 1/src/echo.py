@@ -18,16 +18,13 @@ def echo(audioData, numberOfEchos, gain = 0.5):
     Parameters:
         audioData     (Numpy array): Numpy array that represents audio data.
         numberOfEchos (int)        : Number of echoes to add to audio.
-        gain (float)      : Gain to multiply signal by for each echo.
+        gain (float)               : Gain to multiply signal by for each echo.
                                      Must be between 0.0 and 1.0!
 
     Returns:
         (Numpy array): Numpy array that represents audio data with added echoes.
     """
 
-    # CDL=> Add validation for inputs
-
-    # CDL=> Perhaps clean up logic to simplify
     outAudio = audioDataoutAudio = audioData.copy()
     for echoNumber in range(numberOfEchos):
         outAudio = np.append(outAudio, (audioData * (gain ** (echoNumber+1))))
@@ -38,13 +35,13 @@ def echo(audioData, numberOfEchos, gain = 0.5):
 if __name__ == "__main__":
     # Simple test to add echoes to audio sample
     print("=> Audio 2 echo's test: ")
-    inFilePath = Path("../Audio Files/JUST_HEY.mp3")
+    inFilePath = Path("../Audio Files/HEY.mp3")
     outFilePath = Path("../Audio Files/TEST_HEY_2_echos.mp3")
     numEchos = 2
     gainChange = 0.7
-    sampleRate, audioData = importMP3Audio(inFilePath, True)
+    sampleRate, audioData = importMP3Audio(inFilePath)
     print("Audio Imported Successfully...")
     echoAudioData = echo(audioData, numEchos, gainChange)
     print("Audio Echoed Successfully...")
-    exportMP3Audio(outFilePath, echoAudioData, sampleRate, True)
+    exportMP3Audio(outFilePath, echoAudioData, sampleRate)
     print("Audio Exported Successfully...")

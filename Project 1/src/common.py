@@ -12,59 +12,48 @@ import pydub
 import numpy as np
 from pathlib import Path
 
-def importMP3Audio(audioFileName, normalized=False):
+def importMP3Audio(audioFileName):
     """
     Function to import audio from an MP3 file and convert it to a Numpy array.
 
     Description: Imports MP3 data using FFMPEG and Pydub to create an 
                  AudioSegment object which gets converted to a Numpy array. 
-                 This array can be normalized from (-1 and +1) depending on
-                 (normalized).
+                 This array will be normalized from (-1 and +1).
 
     Parameters:
         audioFileName (string): The input MP3 audio file name.
-        normalized    (bool)  : Whether the data should be normalized.
 
     Returns:
         (int)        : The sample rate of the audio.
-        (Numpy Array): The audio data which can be normalized.
+        (Numpy Array): The normalized audio data.
     """
 
     audioSegmentStereo = pydub.AudioSegment.from_mp3(audioFileName)
     audioNpArray = np.array(audioSegmentStereo.get_array_of_samples())
     
-    # If user specifies normalized data, reformat to floats between (-1 and +1)
-    if normalized:
-        return audioSegmentStereo.frame_rate, np.float32(audioNpArray) / 2**15
-    else:
-        return audioSegmentStereo.frame_rate, audioNpArray
+    # Reformat to floats between (-1 and +1)
+    return audioSegmentStereo.frame_rate, np.float32(audioNpArray) / 2**15
 
-def exportMP3Audio(audioFileName, audioNpArray, sampleRate, normalized=False):
+def exportMP3Audio(audioFileName, audioNpArray, sampleRate):
     """
     Function to export audio from a Numpy array and convert it to a MP3 file.
     
     Description: 
         Exports MP3 data using FFMPEG and Pydub from an 
         AudioSegment object which gets converted from a Numpy array. 
-        This array may be normalized from (-1 and +1) which can be  
-        specified using (normalized).
+        This array is normalized from (-1 and +1).
 
     Parameters:
         audioFileName (string)     : The output MP3 audio file name.
         audioNpArray  (Numpy Array): The input audio data.
         sampleRate    (int)        : The sample rate of the audio.
-        normalized    (bool)       : Whether the data has been normalized.
 
     Returns: (none)
     """
     
-    # If user specifies normalized data, adjust from floats between
-    # (-1 and +1) to 16-bit data (-2^15 to +2^15)    
-    if normalized:
-        audioNpArray = np.int16(audioNpArray * (2 ** 15))
-    else:
-        audioNpArray = np.int16(audioNpArray)
-
+    # Adjust data (-1 and +1) to 16-bit data (-2^15 to +2^15)    
+    audioNpArray = np.int16(audioNpArray * (2 ** 15))
+    
     # Create AudioSegment object from numpy array
     audioSegmentStereo = pydub.AudioSegment(audioNpArray.tobytes(), 
                                             frame_rate=sampleRate, 
@@ -77,9 +66,9 @@ def exportMP3Audio(audioFileName, audioNpArray, sampleRate, normalized=False):
 if __name__ == "__main__":
     # Simple test to read in the audio file and write it back out
     print("=> Audio Imported/Export test: ")
-    inFilePath = Path("../Audio Files/JUST_HEY.mp3")
+    inFilePath = Path("../Audio Files/HEY.mp3")
     outFilePath = Path("../Audio Files/HEY_new.mp3")
-    sampleRate, testAudioData = importMP3Audio(inFilePath, True)
+    sampleRate, testAudioData = importMP3Audio(inFilePath)
     print("Audio Imported Successfully...")
-    exportMP3Audio(outFilePath, testAudioData, sampleRate, True)
+    exportMP3Audio(outFilePath, testAudioData, sampleRate)
     print("Audio Exported Successfully...")
