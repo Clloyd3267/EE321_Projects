@@ -52,6 +52,9 @@ reconstructed_data = data*prin_comps;
 figure
 scatter(reconstructed_data,zeros(size(reconstructed_data)));
 
+%%The plot indicates that there are two clusters of data that resulted from
+%%the projection of the three dimensional data clusters onto a singular dimension.
+
 %% 3. Higher Dimensional Data
 %load data
 newData = readmatrix("gen_data2.csv");
