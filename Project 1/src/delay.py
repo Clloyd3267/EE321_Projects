@@ -3,42 +3,44 @@
 # Author(s)   : Kyle Bielby, Chris Lloyd, Stephen Epp, Philip Hubbe
 # Class       : EE321 (Project 1)
 # Due Date    : 2020-09-18
-# Description : CDL=> Here Later
+# Description : Functions to add delay to an audio sample stored in a Numpy 
+#               array.
 ################################################################################
 
 # Imports
-from common import * # CDL=> Remove later, only for testing!
+from common import *  # Only for testing!
 import numpy as np
 
-# def delay(audioData):
-#     """
-#     Function to add delay to audio.
-#
-#     Parameters:
-#         audioData (CDL=> What type?): The input audio.
-#
-#     Returns:
-#         (0): No errors, (Anything else): Errors.
-#     """
+def delay(audioData, sampleRate, delayTimeSec):
+    """
+    Function to add delay to audio data stored in a Numpy array.
 
-##########Kyle Bielby: delay function that uses numpy array functions#################
-# Description: function that takes numpy array representing an
-#   audio file and adds a delay to the numpy array
-# delayPeriod: determines delay in seconds used for audio file
-# sampleRate: determines the sample rate used to form the delay
-# audioData: numpy array that represents audio file
-# author: Kyle Bielby
-def delay(delayPeriod, sampleRate, audioData):
-    zeros = delayPeriod * sampleRate    #compute number of zeros to prepend to numpy array
+    Parameters:
+        audioData    (Numpy array): Numpy array that represents audio data.
+        sampleRate   (int)        : The sample rate of the audio data.
+        delayTimeSec (int)        : Delay time in seconds used for audio data.
 
-    #prepend zeros to numpy array to cause delay for x seconds
-    for x in range(zeros):
-        audioData = np.insert(audioData, 0, x, axis=0)
+    Returns:
+        (Numpy array): Numpy array that represents audio data with added delay.
+    """    
 
-    return audioData    #return delayed numpy array
-##########Kyle Bielby: end of numpy array functions#####################################
+    # Compute number of zeros to prepend to numpy array
+    numZeros = delayTimeSec * sampleRate    
+
+    # Return delayed numpy array
+    return np.concatenate((np.zeros(int(numZeros)), audioData))
+
 
 # Main code for this file
 if __name__ == "__main__":
-    # CDL=> Add test code here
-    print("Hello World!")
+    # Simple test to add delay to audio sample
+    print("=> Audio delay for 1 second test: ")
+    inFilePath = Path("../Audio Files/HEY.mp3")
+    outFilePath = Path("../Audio Files/TEST_HEY_delayed_1_second.mp3")
+    delayTimeSec = 1
+    sampleRate, audioData = importMP3Audio(inFilePath)
+    print("Audio Imported Successfully...")
+    delayedAudioData = delay(audioData, sampleRate, delayTimeSec)
+    print("Audio Delayed Successfully...")
+    exportMP3Audio(outFilePath, delayedAudioData, sampleRate)
+    print("Audio Exported Successfully...")
