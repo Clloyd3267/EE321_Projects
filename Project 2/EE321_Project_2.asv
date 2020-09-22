@@ -40,8 +40,9 @@ eig_value = diag(Dd);
 eig_val_sorted = eig_value(ind);
 eig_vec_sorted = Qd(:,ind);
 
-% Condition Number - Cd >> 1 indicating Highly ill-conditioned matrix
-Cd = max(eig_value) / min(eig_value);
+% Condition Number Cd = MAX(Dd) / MIN(Dd) = 7.0727/0.5595 = 12.6411 (all non-zero min and max)
+Cd = max(eig_value) / mi;
+% Cd >> 1 indicating Highly ill-conditioned matrix
 
 % Select the eigenvector corresponding to the highest valued eigenvalue
 num_comp = 1;
