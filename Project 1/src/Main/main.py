@@ -46,20 +46,24 @@
 #
 #     return audioData    #return delayed numpy array
 #
-# def main():
-#
-#     #read file in to numpy array
-#     frameRate, audio = read("HEY.mp3") #KAB this currently works and creates a numpy get_array_of_samples
-#
-#     #create delayed array for sound file
-#     audio = delay(1, frameRate, audio)
-#
-#     #create new sound file from numpy array
-#     write('HEY_Delay.mp3', frameRate, audio)
-#
-#     time.sleep(5)   #KAB temporary delay function so that I can actually see things
-#
-# main()
+def echo(audioData):
+
+    return audioData
+
+def main():
+
+    #read file in to numpy array
+    # frameRate, audio = read("HEY.mp3") #KAB this currently works and creates a numpy get_array_of_samples
+    #
+    # #create delayed array for sound file
+    # audio = delay(1, frameRate, audio)
+    #
+    # #create new sound file from numpy array
+    # write('HEY_Delay.mp3', frameRate, audio)
+
+    time.sleep(5)   #KAB temporary delay function so that I can actually see things
+
+main()
 #
 # #if __name__ == "__main__":
 #  #   main()
