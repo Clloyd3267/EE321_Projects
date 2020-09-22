@@ -40,6 +40,8 @@ eig_value = diag(Dd);
 eig_val_sorted = eig_value(ind);
 eig_vec_sorted = Qd(:,ind);
 
+k = max(eig_value)/min(eig_value);
+
 % Condition Number - Cd >> 1 indicating Highly ill-conditioned matrix
 Cd = max(eig_value) / min(eig_value);
 
