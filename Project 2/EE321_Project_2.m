@@ -59,10 +59,40 @@ scatter(reconstructed_data,zeros(size(reconstructed_data)));
 %load data
 newData = readmatrix("gen_data2.csv");
 
-%Find Dimensionality of the data
-[r, c] = size(newData)
+% Find Dimensionality of the data
+[row, c] = size(newData)
 
-%Visualize the data
+% Visualize the data
+
+% find the mean of the data
+gen2Mean = mean(newData);
+
+% Subtract mean from each data sample
+dm = newData - repmat(gen2Mean, row, 1);
+
+% Find Co-Variance Matrix
+cd=(1/(row-1))*(dm.'*dm);
+
+% Do EigenDecomposition
+[Qd, Dd] = eig(cd);
+
+% Sort the eigenvalues in decending order
+eig_value = diag(Dd);
+[~,ind] = sort(eig_value, "descend");
+eig_val_sorted = eig_value(ind);
+eig_vec_sorted = Qd(:,ind);
+
+%find sum of squares for the eigenvectors
+sumSquares = 0;
+for eigenVectors = 0:size(eig_value)
+    sumSquares = sumSquares + eig_value(eigenVectors, 1);
+end
+
+%display percentage energy contained in eigen vector
+for eigenVector = 0:size(Dd)
+    percentageEnergy = Dd(eigenVector, eigenVector) / sumSquares
+end
+
 
 
 %Apply PCA and find the minimum number of dimensions needed to
