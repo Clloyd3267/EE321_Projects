@@ -96,4 +96,11 @@ eig_vec_sorted = Qd(:,ind);
 % Condition Number - Cd >> 1 indicating Highly ill-conditioned matrix
 Cd = max(eig_value) / min(eig_value);
 
-eig_value_nrg = eigValueNRG(eig_value);
+[eig_value_nrg, num_comp] = eigValueNRG(eig_value);
+
+prin_comps = eig_vec_sorted(:,1:num_comp);
+reconstructed_data = data*prin_comps;
+
+% Visualize data
+figure
+scatter(reconstructed_data,zeros(size(reconstructed_data)));
