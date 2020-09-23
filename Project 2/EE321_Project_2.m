@@ -52,16 +52,17 @@ reconstructed_data = data*prin_comps;
 figure
 scatter(reconstructed_data,zeros(size(reconstructed_data)));
 
-%%The plot indicates that there are two clusters of data that resulted from
-%%the projection of the three dimensional data clusters onto a singular dimension.
+%The plot indicates that there are two clusters of data that resulted from
+%the projection of the three dimensional data clusters onto a singular 
+%dimension.
 
 %% 3. Higher Dimensional Data
-
+clear; clc;
 %load data
 newData = readmatrix("gen_data2.csv");
 
 % Find Dimensionality of the data
-[row, c] = size(newData)
+[row, c] = size(newData);
 
 % Visualize the data
 
@@ -77,7 +78,7 @@ cd=(1/(row-1))*(dm.'*dm);
 % Do EigenDecomposition
 [Qd, Dd] = eig(cd);
 
-% Sort the eigenvalues in decending order
+% Sort the eigenvalues in descending order
 eig_value = diag(Dd);
 [~,ind] = sort(eig_value, "descend");
 eig_val_sorted = eig_value(ind);
@@ -85,20 +86,38 @@ eig_vec_sorted = Qd(:,ind);
 
 %find sum of squares for the eigenvectors
 sumSquares = 0;
-for eigenVectors = 0:size(eig_value)
+
+%sum the squared eigen values
+for eigenVectors = 1:size(eig_value)
     sumSquares = sumSquares + eig_value(eigenVectors, 1);
 end
 
 %display percentage energy contained in eigen vector
-for eigenVector = 0:size(Dd)
-    percentageEnergy = Dd(eigenVector, eigenVector) / sumSquares
+percentageEnergy = size(Dd):1;
+for eigenVector = 1:size(Dd)
+    percentageEnergy(eigenVector, 1) = Dd(eigenVector, eigenVector) / sumSquares; %display percentages as assigning
 end
-
 
 %Apply PCA and find the minimum number of dimensions needed to
 %represent > 90% of the energy of the data
+Dimensions = 1;
+sum = 0;
+for i = size(percentageEnergy):-1:1
+    sum = sum + percentageEnergy(i, 1);
+    if sum < .9
+        Dimensions = Dimensions + 1;
+    end
+end
+
 %Reconstruct the low dimensional data and visualize it.
-%Interpret the data
+prin_comps = eig_vec_sorted(:,1:Dimensions);
+reconstructedData = newData * prin_comps;
+
+%display figure of reconstructed data
+figure
+
+scatter(reconstructedData(:,1), reconstructedData(:,2));
+title('gen data2 Dimensioned plot');
 
 %% 4. Keystroke Data
 clear; clc;
