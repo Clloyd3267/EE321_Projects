@@ -40,8 +40,6 @@ eig_value = diag(Dd);
 eig_val_sorted = eig_value(ind);
 eig_vec_sorted = Qd(:,ind);
 
-k = max(eig_value)/min(eig_value);
-
 % Condition Number - Cd >> 1 indicating Highly ill-conditioned matrix
 Cd = max(eig_value) / min(eig_value);
 
@@ -55,4 +53,31 @@ figure
 scatter(reconstructed_data,zeros(size(reconstructed_data)));
 
 %% 3. Higher Dimensional Data
+
 %% 4. Keystroke Data
+clear; clc;
+data = readmatrix("keystroke_data.csv");
+
+% Output dimensions of data
+[r, c] = size(data);
+
+m = mean(data);
+
+% Subtract mean from each data sample
+dm = data - repmat(m,r,1);
+
+% Find Co-Variance Matrix
+cd=(1/(r-1))*(dm.'*dm);
+
+% Do EigenDecomposition
+[Qd, Dd] = eig(cd);
+
+eig_value = diag(Dd);
+[~,ind] = sort(eig_value, 'descend');
+eig_val_sorted = eig_value(ind);
+eig_vec_sorted = Qd(:,ind);
+
+% Condition Number - Cd >> 1 indicating Highly ill-conditioned matrix
+Cd = max(eig_value) / min(eig_value);
+
+eig_value_nrg = eigValueNRG(eig_value);
