@@ -36,7 +36,7 @@ cd=(1/(r-1))*(dm.'*dm);
 
 % Sort the eigenvalues in decending order
 eig_value = diag(Dd);
-[~,ind] = sort(eig_value, 'descend');
+[~,ind] = sort(eig_value, "descend");
 eig_val_sorted = eig_value(ind);
 eig_vec_sorted = Qd(:,ind);
 
@@ -52,7 +52,23 @@ reconstructed_data = data*prin_comps;
 figure
 scatter(reconstructed_data,zeros(size(reconstructed_data)));
 
+%%The plot indicates that there are two clusters of data that resulted from
+%%the projection of the three dimensional data clusters onto a singular dimension.
+
 %% 3. Higher Dimensional Data
+
+%load data
+newData = readmatrix("gen_data2.csv");
+
+%Find Dimensionality of the data
+[r, c] = size(newData)
+
+%Visualize the data
+
+%Apply PCA and find the minimum number of dimensions needed to
+%represent > 90% of the energy of the data
+%Reconstruct the low dimensional data and visualize it.
+%Interpret the data
 
 %% 4. Keystroke Data
 clear; clc;
