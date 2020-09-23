@@ -56,6 +56,7 @@ scatter(reconstructed_data,zeros(size(reconstructed_data)));
 %%the projection of the three dimensional data clusters onto a singular dimension.
 
 %% 3. Higher Dimensional Data
+
 %load data
 newData = readmatrix("gen_data2.csv");
 
@@ -94,9 +95,42 @@ for eigenVector = 0:size(Dd)
 end
 
 
-
 %Apply PCA and find the minimum number of dimensions needed to
 %represent > 90% of the energy of the data
 %Reconstruct the low dimensional data and visualize it.
 %Interpret the data
+
 %% 4. Keystroke Data
+clear; clc;
+data = readmatrix("keystroke_data.csv");
+
+% Output dimensions of data
+[r, c] = size(data);
+
+m = mean(data);
+
+% Subtract mean from each data sample
+dm = data - repmat(m,r,1);
+
+% Find Co-Variance Matrix
+cd=(1/(r-1))*(dm.'*dm);
+
+% Do EigenDecomposition
+[Qd, Dd] = eig(cd);
+
+eig_value = diag(Dd);
+[~,ind] = sort(eig_value, 'descend');
+eig_val_sorted = eig_value(ind);
+eig_vec_sorted = Qd(:,ind);
+
+% Condition Number - Cd >> 1 indicating Highly ill-conditioned matrix
+Cd = max(eig_value) / min(eig_value);
+
+[eig_value_nrg, num_comp] = eigValueNRG(eig_value);
+
+prin_comps = eig_vec_sorted(:,1:num_comp);
+reconstructed_data = data*prin_comps;
+
+% Visualize data
+figure
+scatter(reconstructed_data,zeros(size(reconstructed_data)));
