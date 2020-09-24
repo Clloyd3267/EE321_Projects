@@ -6,7 +6,13 @@
 % Description : CDL=> Fill in later
 % -------------------------------------------------------------------------
 
-%% 1. Examine the Data:
+%% Original File ("gen_data.csv"):
+
+% Clear the workspace and console
+clear; clc;
+
+% Examine the Data:
+
 % Read in data
 data = readmatrix("gen_data.csv");
 
@@ -16,9 +22,7 @@ data = readmatrix("gen_data.csv");
 % Display data in a scatterplot
 scatter3(data(:,1),data(:,2),data(:,3));
 
-%% 2. Dimensionality Reduction:
-
-% 2.1. Principal Component Analysis (PCA):
+% Principal Component Analysis (PCA):
 
 % Calculate Mean
 m = mean(data);
@@ -32,29 +36,46 @@ cd=(1/(r-1))*(dm.'*dm);
 % Do EigenDecomposition
 [Qd, Dd] = eig(cd);
 
-% 2.2. Dimensionality:
+% Dimensionality Reduction:
 
 % Sort the eigenvalues in decending order
-eig_value = diag(Dd);
-[~,ind] = sort(eig_value, "descend");
-eig_val_sorted = eig_value(ind);
-eig_vec_sorted = Qd(:,ind);
+eigValue = diag(Dd);
+[~,ind] = sort(eigValue, "descend");
+eigValSorted = eigValue(ind);
+eigVecSorted = Qd(:,ind);
 
-% Condition Number - Cd >> 1 indicating Highly ill-conditioned matrix
-Cd = max(eig_value) / min(eig_value);
+% Condition Number
+Cd = max(eigValue) / min(eigValue);
 
-% Select the eigenvector corresponding to the highest valued eigenvalue
-num_comp = 1;
-prin_comps = eig_vec_sorted(:,1:num_comp);
-reconstructed_data = data*prin_comps;
+% Cd >> 1 indicating Highly ill-conditioned matrix
+
+% Calculate energy for each Eigenvalue
+% eigenEnergy(n) = eigValue(n)^2 / (ΣeigValue()^2)
+eigenEnergy = eigValSorted.^2./sum(eigValSorted.^2);
+
+% Find number of Eigen values needed to represent 90% of data
+eigenEnergySum = 0;
+for i = 1:length(eigenEnergy)
+  eigenEnergySum = eigenEnergySum + eigenEnergy(i);
+  if eigenEnergySum >= 0.9
+    num_comp = i;
+    break
+  end
+end
+
+% In this case, 1 Eigen value is enough
+
+% Select the eigenvector(s) corresponding to the highest valued eigenvalue
+prinComps = eigVecSorted(:,1:num_comp);
+reconstructedData = data * prinComps;
 
 % Visualize data
 figure
-scatter(reconstructed_data,zeros(size(reconstructed_data)));
+scatter(reconstructedData,zeros(size(reconstructedData)));
 
-%The plot indicates that there are two clusters of data that resulted from
-%the projection of the three dimensional data clusters onto a singular 
-%dimension.
+% The plot indicates that there are two clusters of data that resulted from
+% the projection of the three dimensional data clusters onto a singular 
+% dimension.
 
 %% 3. Higher Dimensional Data
 clear; clc;
@@ -79,17 +100,17 @@ cd=(1/(row-1))*(dm.'*dm);
 [Qd, Dd] = eig(cd);
 
 % Sort the eigenvalues in descending order
-eig_value = diag(Dd);
-[~,ind] = sort(eig_value, "descend");
-eig_val_sorted = eig_value(ind);
-eig_vec_sorted = Qd(:,ind);
+eigValue = diag(Dd);
+[~,ind] = sort(eigValue, "descend");
+eigValSorted = eigValue(ind);
+eigVecSorted = Qd(:,ind);
 
 %find sum of squares for the eigenvectors
 sumSquares = 0;
 
 %sum the squared eigen values
-for eigenVectors = 1:size(eig_value)
-    sumSquares = sumSquares + eig_value(eigenVectors, 1) * eig_value(eigenVectors, 1);
+for eigenVectors = 1:size(eigValue)
+    sumSquares = sumSquares + eigValue(eigenVectors, 1) * eigValue(eigenVectors, 1);
 end
 
 %display percentage energy contained in eigen vector
@@ -110,7 +131,7 @@ for i = size(percentageEnergy):-1:1
 end
 
 %Reconstruct the low dimensional data and visualize it.
-prin_comps = eig_vec_sorted(:,1:Dimensions);
+prin_comps = eigVecSorted(:,1:Dimensions);
 reconstructedData = newData * prin_comps;
 
 %display figure of reconstructed data
@@ -137,17 +158,17 @@ cd=(1/(r-1))*(dm.'*dm);
 % Do EigenDecomposition
 [Qd, Dd] = eig(cd);
 
-eig_value = diag(Dd);
-[~,ind] = sort(eig_value, 'descend');
-eig_val_sorted = eig_value(ind);
-eig_vec_sorted = Qd(:,ind);
+eigValue = diag(Dd);
+[~,ind] = sort(eigValue, 'descend');
+eigValSorted = eigValue(ind);
+eigVecSorted = Qd(:,ind);
 
 % Condition Number - Cd >> 1 indicating Highly ill-conditioned matrix
-Cd = max(eig_value) / min(eig_value);
+Cd = max(eigValue) / min(eigValue);
 
-[eig_value_nrg, num_comp] = eigValueNRG(eig_value);
+[eig_value_nrg, num_comp] = eigValueNRG(eigValue);
 
-prin_comps = eig_vec_sorted(:,1:num_comp);
+prin_comps = eigVecSorted(:,1:num_comp);
 reconstructed_data = data*prin_comps;
 
 % Visualize data
