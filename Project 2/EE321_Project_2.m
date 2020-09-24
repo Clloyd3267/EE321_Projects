@@ -89,7 +89,7 @@ sumSquares = 0;
 
 %sum the squared eigen values
 for eigenVectors = 1:size(eig_value)
-    sumSquares = sumSquares + eig_value(eigenVectors, 1);
+    sumSquares = sumSquares + eig_value(eigenVectors, 1) * eig_value(eigenVectors, 1);
 end
 
 %display percentage energy contained in eigen vector
@@ -100,7 +100,7 @@ end
 
 %Apply PCA and find the minimum number of dimensions needed to
 %represent > 90% of the energy of the data
-Dimensions = 1;
+Dimensions = 0;
 sum = 0;
 for i = size(percentageEnergy):-1:1
     sum = sum + percentageEnergy(i, 1);
@@ -116,11 +116,11 @@ reconstructedData = newData * prin_comps;
 %display figure of reconstructed data
 figure
 
-scatter(reconstructedData(:,1), reconstructedData(:,2));
+scatter3(reconstructedData(:,1), reconstructedData(:,2), reconstructedData(:,3));
 title('gen data2 Dimensioned plot');
 
 %% 4. Keystroke Data
-clear; clc;
+%clear; clc;
 data = readmatrix("keystroke_data.csv");
 
 % Output dimensions of data
