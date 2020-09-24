@@ -79,8 +79,13 @@ scatter(reconstructedData,zeros(size(reconstructedData)));
 
 %% 3. Higher Dimensional Data
 clear; clc;
+
 %load data
 newData = readmatrix("gen_data2.csv");
+
+%create three dimensional plot 
+scatter3(newData(:,1), newData(:,2), newData(:,3));
+title('gen data2 Three Dimensional Plot');
 
 % Find Dimensionality of the data
 [row, c] = size(newData);
@@ -116,7 +121,7 @@ end
 %display percentage energy contained in eigen vector
 percentageEnergy = size(Dd):1;
 for eigenVector = 1:size(Dd)
-    percentageEnergy(eigenVector, 1) = Dd(eigenVector, eigenVector) / sumSquares; %display percentages as assigning
+    percentageEnergy(eigenVector, 1) = (Dd(eigenVector, eigenVector) * Dd(eigenVector, eigenVector))/ sumSquares; %display percentages as assigning
 end
 
 %Apply PCA and find the minimum number of dimensions needed to
@@ -125,8 +130,9 @@ Dimensions = 0;
 sum = 0;
 for i = size(percentageEnergy):-1:1
     sum = sum + percentageEnergy(i, 1);
-    if sum < .9
-        Dimensions = Dimensions + 1;
+    Dimensions = Dimensions + 1;
+    if sum > .9
+        break;
     end
 end
 
@@ -137,7 +143,7 @@ reconstructedData = newData * prin_comps;
 %display figure of reconstructed data
 figure
 
-scatter3(reconstructedData(:,1), reconstructedData(:,2), reconstructedData(:,3));
+scatter(reconstructedData(:,1), reconstructedData(:,2));
 title('gen data2 Dimensioned plot');
 
 %% 4. Keystroke Data
