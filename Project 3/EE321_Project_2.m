@@ -12,7 +12,23 @@ clear; clc;
 t = 0.001:0.01:2;
 %x calculated by hand
 x = 1+1/2*cos(pi*t)+sin(2*pi*t);
+figure(1);
+subplot(2,1,1)
 plot(t,x)
+
+%k = [-2, -1, 0, 1, 2];
+n=3;
+k = -n:n;
+xk = dd(k) + 1/4*dd(k+1) + 1/4*dd(k-1) + 1/(2*1i)*dd(k-2)-1/(2*1i)*dd(k+2);
+sz = size(t);
+xhat = zeros(sz);
+for i = 1:length(k)
+    xhat = xhat + xk(i)*exp(1i*k(i)*pi*t);
+end
+subplot(2,1,2)
+plot(t,xhat)
+
+%% 
 % %% Findung xhat
 % for n = 1:1000
 %     xhat=0;
@@ -56,7 +72,7 @@ plot(t,x)
 % plot(t,xhat)
 
 t1 = 0.001:0.01:4;
-N=1000000;
+N=1000;
 l=0;
 for k = -N:N
     xk = dd(k) + 1/4*dd(k+1) + 1/4*dd(k-1) + 1/(2*1i)*dd(k-2)-1/(2*1i)*dd(k+2);
