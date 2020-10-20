@@ -9,3 +9,13 @@
 
 % Clear the workspace and console
 clear; clc;
+
+% x1(t) for T=4
+t = 0.001:0.01:4;
+x = 1*((t<=1)|((t>=3)&(t<=4)));
+
+% Plot x1(t)
+plot(t, x);
+
+% Calculate mean squared error (MSE) for x and xhat
+mse(N) = mean((x - xhat).^2);
