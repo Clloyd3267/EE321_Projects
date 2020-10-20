@@ -10,23 +10,53 @@
 % Clear the workspace and console
 clear; clc;
 t = 0.001:0.01:2;
-%x calculated by hand
+
+%x (calculated by hand)
 x = 1+1/2*cos(pi*t)+sin(2*pi*t);
+
+%Plot x
 figure(1);
 subplot(2,1,1)
 plot(t,x)
 
-%k = [-2, -1, 0, 1, 2];
-n=3;
-k = -n:n;
-xk = dd(k) + 1/4*dd(k+1) + 1/4*dd(k-1) + 1/(2*1i)*dd(k-2)-1/(2*1i)*dd(k+2);
-sz = size(t);
-xhat = zeros(sz);
-for i = 1:length(k)
-    xhat = xhat + xk(i)*exp(1i*k(i)*pi*t);
+%Preallocation
+n_max = 10;
+mse = zeros(size(1:n_max));
+ni_bool = 0;
+nii_bool = 0;
+
+for n = 1:n_max
+    k = -n:n;
+    xk = dd(k) + 1/4*dd(k+1) + 1/4*dd(k-1) + 1/(2*1i)*dd(k-2)-1/(2*1i)*dd(k+2);
+    
+    %Solve for xhat
+    xhat = zeros(size(t));
+    for i = 1:length(k)
+        xhat = xhat + xk(i)*exp(1i*k(i)*pi*t);
+    end
+    
+    %Plot xhat
+    subplot(2,1,2)
+    plot(t,xhat)
+    pause(0.05)
+    
+    mse(n) = mean((x - xhat).^2);
+
+    %Break when mse small enough
+    if(mse(n) <= 0.01 && ni_bool == 0)
+        ni = mse(n);
+        ni_bool = 1;
+    end
+    if(mse(n) <= 0.001 && nii_bool == 0)  
+        nii = mse(n);
+        nii_bool = 1;
+    end
 end
-subplot(2,1,2)
-plot(t,xhat)
+
+%Plot mse(n) vs n
+msedb = 20*log(mse);
+figure(2)
+plot(n,msedb)
 
 %% 
 % %% Findung xhat
