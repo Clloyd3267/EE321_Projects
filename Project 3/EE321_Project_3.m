@@ -7,131 +7,178 @@
 %               terms used.
 % ------------------------------------------------------------------------------
 
+%% 1a
+
 % Clear the workspace and console
 clear; clc;
-t = 0.001:0.01:2;
 
-%x (calculated by hand)
+% Waveform Period
+period = 2;
+
+% Time variable for one period
+t = 0.001:0.01:period;
+
+% x(t) (calculated by hand)
 x = 1+1/2*cos(pi*t)+sin(2*pi*t);
 
-%Plot x
-figure(1);
+% Plot x
+figure('Name','x(t) Comparison for Part 1A','NumberTitle','off')
 subplot(2,1,1)
 plot(t,x)
+title("x(t) for 1A")
+xlabel("t") 
+ylabel("x(t)") 
 
-%Preallocation
-n_max = 10;
-mse = zeros(size(1:n_max));
-ni_bool = 0;
-nii_bool = 0;
+% Number of terms to use for x_hat
+n_max = 5;
 
-for n = 1:n_max
-    k = -n:n;
+mse = zeros(n_max, 1);
+
+for N = 1:n_max
+    k = -N:N;
     xk = dd(k) + 1/4*dd(k+1) + 1/4*dd(k-1) + 1/(2*1i)*dd(k-2)-1/(2*1i)*dd(k+2);
-    
-    %Solve for xhat
-    xhat = zeros(size(t));
-    for i = 1:length(k)
-        xhat = xhat + xk(i)*exp(1i*k(i)*pi*t);
+
+    % Find x_hat
+    x_hat = zeros(size(t));
+    for l = 1:length(k)
+        x_hat = x_hat + xk(l)*exp(1i*k(l)*pi*t);
     end
-    
-    %Plot xhat
+
+    % Plot x_hat
     subplot(2,1,2)
-    plot(t,xhat)
+    plot(t,real(x_hat))
+    title("x\_hat(t) for 1A")
+    xlabel("t") 
+    ylabel("x\_hat(t)") 
+
+    % Calculate mean squared error between x and x_hat
+    mse(N) = real(mean((x - x_hat).^2));
+end
+
+%% 1b
+% Clear the workspace and console
+clear; clc;
+
+% Waveform Period
+period = 2;
+
+% Time variable for one period
+t = 0.001:0.01:period;
+
+% x(t) (calculated by hand)
+x = -4*sin(2*pi*t)-2*sin(pi*t);
+
+% Plot x
+figure('Name','x(t) Comparison for Part 1B','NumberTitle','off')
+subplot(2,1,1)
+plot(t,x)
+title("x(t) for 1B")
+xlabel("t") 
+ylabel("x(t)") 
+
+% Number of terms to use for x_hat
+n_max = 5;
+
+mse = zeros(n_max, 1);
+
+for N = 1:n_max
+    k = -N:N;
+    xk = k.*(1i*(abs(k) < 3));
+    
+    % Find x_hat
+    x_hat = zeros(size(t));
+    for l = 1:length(k)
+        x_hat = x_hat + xk(l)*exp(1i*k(l)*pi.*t);
+    end
+
+    % Plot x_hat
+    subplot(2,1,2)
+    plot(t,real(x_hat));
+    title("x\_hat(t) for 1B")
+    xlabel("t") 
+    ylabel("x\_hat(t)") 
+
+    % Calculate mean squared error between x and x_hat
+    mse(N) = real(mean((x - x_hat).^2));
+end
+
+%% 2a
+% Clear the workspace and console
+clear; clc;
+
+% Waveform Period
+period = 4;
+d = 2;
+w0 = 2*pi/period;
+
+% Time variable for one period
+t = 0.001:0.01:period;
+
+% x(t) (calculated by hand)
+x = 1*((t<=1)|((t>=3)&(t<=4)));
+
+% Plot x
+figure('Name','x(t) Comparison for Part 2A','NumberTitle','off')
+subplot(2,1,1)
+plot(t,x)
+title("x(t) for 2a")
+xlabel("t") 
+ylabel("x(t)") 
+
+% Number of terms to use for x_hat
+n_max = 200;
+
+mse = zeros(n_max, 1);
+
+for N = 1:n_max
+    k = -N:N;
+    xk = d./period.*sin(1/2.*k.*w0.*d)./(1/2.*k.*w0.*d);
+    xk(isnan(xk)) = 0;  % Remove k=0 term due to div by zero
+    
+    % Find x_hat
+    x_hat = d/period + zeros(size(t));
+    
+    for l = 1:length(k)
+        x_hat = x_hat + real(xk(l)*exp(1i*k(l)*w0.*t));
+    end
+
+    % Plot x_hat
+    subplot(2,1,2)
+    plot(t,x_hat);
+    title("x\_hat(t) for 2a")
+    xlabel("t") 
+    ylabel("x\_hat(t)") 
+
+    % Calculate mean squared error between x and x_hat
+    mse(N) = mean((x - x_hat).^2);
+    
+    % Add small delay to animate graph forming
     pause(0.05)
-    
-    mse(n) = mean((x - xhat).^2);
-
-    %Break when mse small enough
-    if(mse(n) <= 0.01 && ni_bool == 0)
-        ni = mse(n);
-        ni_bool = 1;
-    end
-    if(mse(n) <= 0.001 && nii_bool == 0)  
-        nii = mse(n);
-        nii_bool = 1;
-    end
 end
 
-%Plot mse(n) vs n
-msedb = 20*log(mse);
-figure(2)
-plot(n,msedb)
+% Plot log(mse(n)) vs n
+mse_db = 20*log(mse);
+figure('Name','Mean Squared Error Log Plot for Part 2A','NumberTitle','off')
+plot(mse_db)
+title("Mean Squared Error for 2a")
+xlabel("N") 
+ylabel("20*log(mse(N))")
 
-%% 
-% %% Findung xhat
-% for n = 1:1000
-%     xhat=0;
-%     for k = -n:n
-%         xk=((1*(t==k))+(1/4*(t==(k-1)|t==(k+1)))+(1/2i*(t==(k-2)|t==(k+2))));
-%         plot(t,xk)
-%         %xhat=xhat+
-%     end
-% end
-% 
-% t = 0.001:0.01:4;
-%     xhat=0;
-%     for k = -1000:1000
-%         xk=((1*(t==k))+(1/4*(t==(k-1)|t==(k+1)))+(1/2i*(t==(k-2)|t==(k+2))));
-%         xhat=xhat+xk.*exp(1i*k*pi.*t);
-%     end
+N_1 = find(mse<0.01, 1)
+N_2 = find(mse<0.001, 1)
 
-% n = [-3,-2,-1,0,1,2,3];
-% a = dd(n+2);
-% 
-% stem(n,a)
+%% CDL=> For Part 2B
+% x = t.*((0<=t)&&(t<1))+(2-t).*((1<=t)&&(t<=2));
 
-% t = 0.001:0.01:4;
+%% Function Definitions
 
-% CDL=> Working (missing complex terms at -2,2)
-% N=5;
-% k=-N:N;
-% xk = dd(k) + 1/4*dd(k+1) + 1/4*dd(k-1);% + 1/(2*1i)*dd(k-2)-1/(2*1i)*dd(k+2);
-% stem(k,xk);
-
-% xhat=0;
-
-% t = 0.001:0.01:4;
-% N=1000;
-% k=-N:N;
-% xk = dd(k) + 1/4*dd(k+1) + 1/4*dd(k-1) + 1/(2*1i)*dd(k-2)-1/(2*1i)*dd(k+2);
-% % stem(k,xk); % CDL=> Fails due to complex terms
-% 
-% xhat=xk.*exp(1i*k*pi.*t);
-% 
-% plot(t,xhat)
-
-t1 = 0.001:0.01:4;
-N=1000;
-l=0;
-for k = -N:N
-    xk = dd(k) + 1/4*dd(k+1) + 1/4*dd(k-1) + 1/(2*1i)*dd(k-2)-1/(2*1i)*dd(k+2);
-    xhat=exp((1i*k*pi).*t1) .* xk;
-    l=l + exp((1i*k*pi).*t1);
-end
-% k=-N:N;
-
-% stem(k,xk); % CDL=> Fails due to complex terms
-
-xhat=xk.*exp(1i*k*pi.*t);
-
-plot(t,xhat)
-
-    
-% for k = -N:N
-%     xk = dd(k) + 1/4*dd(k+1) + 1/4*dd(k-1);% + 1/(2*1i)*dd(k-2)-1/(2*1i)*dd(k+2);
-%     stem(k,xk);
-% % %         xk=((1*(t==k))+(1/4*(t==(k-1)|t==(k+1)))+(1/2i*(t==(k-2)|t==(k+2))));
-% %     x
-% % xhat=xhat+xk.*exp(1i*k*pi.*t);
-% end
-
+% Direc-Delta function to imitate a unit impulse
 function y = dd(x)
-% x is a vector
-% We create an output vector of only 0 (our default value)
-y = zeros(1, length(x)); 
+    % x is a vector
+    % We create an output vector of only 0's (our default value)
+    y = zeros(1, length(x)); 
 
-% We find indexes of input values equal to 0,
-% and make them 1
-y(x==0) = 1;
+    % We find indexes of input values equal to 0,
+    % and make them 1
+    y(x==0) = 1;
 end
