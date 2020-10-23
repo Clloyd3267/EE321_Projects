@@ -167,7 +167,7 @@ ylabel("20*log(mse(N))")
 N_1 = find(mse<0.01, 1)
 N_2 = find(mse<0.001, 1)
 
-%% CDL=> For Part 2B
+%% 2b
 
 % Clear the workspace and console
 clear; clc;
