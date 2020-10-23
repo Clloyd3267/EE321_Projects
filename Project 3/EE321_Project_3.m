@@ -121,7 +121,7 @@ x = 1*((t<=1)|((t>=3)&(t<=4)));
 figure('Name','x(t) Comparison for Part 2A','NumberTitle','off')
 subplot(2,1,1)
 plot(t,x)
-title("x(t) for 2a")
+title("x(t) for 2A")
 xlabel("t") 
 ylabel("x(t)") 
 
@@ -145,7 +145,7 @@ for N = 1:n_max
     % Plot x_hat
     subplot(2,1,2)
     plot(t,x_hat);
-    title("x\_hat(t) for 2a")
+    title("x\_hat(t) for 2A")
     xlabel("t") 
     ylabel("x\_hat(t)") 
 
@@ -160,7 +160,7 @@ end
 mse_db = 20*log(mse);
 figure('Name','Mean Squared Error Log Plot for Part 2A','NumberTitle','off')
 plot(mse_db)
-title("Mean Squared Error for 2a")
+title("Mean Squared Error for 2A")
 xlabel("N") 
 ylabel("20*log(mse(N))")
 
@@ -168,7 +168,69 @@ N_1 = find(mse<0.01, 1)
 N_2 = find(mse<0.001, 1)
 
 %% CDL=> For Part 2B
-% x = t.*((0<=t)&&(t<1))+(2-t).*((1<=t)&&(t<=2));
+
+% Clear the workspace and console
+clear; clc;
+
+% Waveform Period
+period = 2;
+w0 = 2*pi/period;
+
+% Time variable for one period
+t = 0.001:0.01:period;
+
+% x(t) (calculated by hand)
+x = t.*((0<=t)&(t<1))+(2-t).*((1<=t)&(t<=2));
+
+% Plot x
+figure('Name','x(t) Comparison for Part 2B','NumberTitle','off')
+subplot(2,1,1)
+plot(t,x)
+title("x(t) for 2B")
+xlabel("t") 
+ylabel("x(t)") 
+
+% Number of terms to use for x_hat
+n_max = 100;
+
+mse = zeros(n_max, 1);
+
+for N = 1:n_max
+    k = -N:N;
+    xk = 4.*((-1).^k==-1)./ (-2.*k.^2.*pi^2);
+    xk(isnan(xk)) = 0;  % Remove k=0 term due to div by zero
+
+    % Find x_hat
+    x_hat = 1/2 + zeros(size(t));
+    
+    for l = 1:length(k)
+        x_hat = x_hat + real(xk(l)*exp(1i*k(l)*w0.*t));
+    end
+
+    % Plot x_hat
+    subplot(2,1,2)
+    plot(t,x_hat);
+    title("x\_hat(t) for 2B")
+    xlabel("t") 
+    ylabel("x\_hat(t)") 
+
+    % Calculate mean squared error between x and x_hat
+    mse(N) = mean((x - x_hat).^2);
+    
+    % Add small delay to animate graph forming
+    pause(0.05)
+end
+
+% Plot log(mse(n)) vs n
+mse_db = 20*log(mse);
+figure('Name','Mean Squared Error Log Plot for Part 2B','NumberTitle','off')
+plot(mse_db)
+title("Mean Squared Error for 2B")
+xlabel("N") 
+ylabel("20*log(mse(N))")
+
+N_1 = find(mse<0.01, 1)
+N_2 = find(mse<0.001, 1)
 
 %% Function Definitions
 
