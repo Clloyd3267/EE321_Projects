@@ -105,8 +105,8 @@ for SNR_db = [-20:1:20]
     Pe = incorrectReceive / N;
 
     % Add values to array
-    PeValues(SNR_db - 9) = Pe;
-    SNRValues(SNR_db - 9) = SNR_db;
+    PeValues(SNR_db - 19) = Pe;
+    SNRValues(SNR_db - 19) = SNR_db;
 end
 
 % Plot Probablity of Error vs SNR
@@ -117,10 +117,6 @@ xlabel("SNR (db)")
 ylabel("Probablity of Error (Pe)")
 
 %% Section 3.3
-% for SNR_db = [-20:1:20]     % vary SNR from -20 db to 20 db
-%     
-% end
-
 N = 1000;
 A = 5;
 x = A*((2*(randn(N,1)>0)) - 1); % Generates +A and -A; both equally likely
@@ -154,8 +150,17 @@ y = y + m; % create noise in y-axis
 % visualize modal data with four symbols with A = 5 and transmission noise
 figure;
 scatter(r,y);
-title("Four Symbol Modal Data with Noise Simulation")
+title("Four Symbol Modal Data with Noise Simulation");
 
+for SNR_db = [-20:1:20]     % vary SNR from -20 db to 20 db
+    SNR = 10^(SNR_db/10);   % Calculate Linear SNR (X_db = 10*log(X))
+    A = sqrt(SNR*var_n^2);  % Calculate value of A (SNR = (A^2)/(var_n^2))
+    
+    % Create transmit data
+    x = A*(2*(randn(N,1)>0) - 1);  % Generates +A and -A randomly but equally likely
+
+    
+end
 
 % for N = [1000 5000] %select a large enough value of N for a smooth curve
 %     for A = [0.01 1]  %TODO change to neeeded values
