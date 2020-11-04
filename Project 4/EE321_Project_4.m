@@ -116,35 +116,45 @@ title("Probablity of Error vs SNR")
 xlabel("SNR (db)")
 ylabel("Probablity of Error (Pe)")
 
-%%Section 3.3
-
-% N = 1000;
-% A = 5;
-% x = A*((2*(randn(N,1)>0)) - 1); % Generates +A and -A; both equally likely
-% y = 2*(randn(N,1)>0) - 1;   % Generates 1 and -1; both equally
-%                             % this will be used to determine if
-%                             % if A is placed on the x-axis or the
-%                             % y axis
-%
-% for i = 1:1:1000
-%     if y(i) == 1        % if y = 1 place on y-axis
-%         y(i) = x(i);
-%         x(i) = 0;
-%     elseif y(i) == -1   % if y = -1 place on x-axis
-%         y(i) = 0;
-%     end
+%% Section 3.3
+% for SNR_db = [-20:1:20]     % vary SNR from -20 db to 20 db
+%     
 % end
-%
-% scatter(x,y);
-%
-% % test noise simulation
-% var_n = 0.01; % Noise variance
-% n = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n
-% m = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n
-% r = x + n; % Received signal
-% y = y + m; %
-%
-% scatter(r,y);
+
+N = 1000;
+A = 5;
+x = A*((2*(randn(N,1)>0)) - 1); % Generates +A and -A; both equally likely
+y = 2*(randn(N,1)>0) - 1;   % Generates 1 and -1; both equally
+                            % this will be used to determine if
+                            % if A is placed on the x-axis or the
+                            % y axis
+
+% place data points on the x-y axis
+for i = 1:1:1000
+    if y(i) == 1        % if y = 1 place on y-axis
+        y(i) = x(i);
+        x(i) = 0;
+    elseif y(i) == -1   % if y = -1 place on x-axis
+        y(i) = 0;
+    end
+end
+
+% visualize modal data with four symbols with A = 5
+figure;
+scatter(x,y);
+title("Four Symbols Modal Data with A = 5");
+
+% test noise simulation
+var_n = 0.01; % Noise variance
+n = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n
+m = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n
+r = x + n; % Received signal
+y = y + m; % create noise in y-axis
+
+% visualize modal data with four symbols with A = 5 and transmission noise
+figure;
+scatter(r,y);
+title("Four Symbol Modal Data with Noise Simulation")
 
 
 % for N = [1000 5000] %select a large enough value of N for a smooth curve
