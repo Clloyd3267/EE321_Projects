@@ -28,7 +28,7 @@ n = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n
 r = x + n;                  % Received signal
 
 % Plot data on a scatter plot to visualize received symbols
-figure
+figure;
 scatter(r, zeros(size(r)))
 title("Received Signal For Part 1")
 xlabel("Amplitude (-A to +A)")
@@ -40,7 +40,7 @@ xlabel("Amplitude (-A to +A)")
 % Decision algorithm for receive signal value
 r_norm = zeros(size(x));
 for i = 1:1:N
-    if r(i) > 0             % If positive
+    if x(i) > 0             % If positive
         r_norm(i) = A;
     else                    % If negative or 0
         r_norm(i) = -1 * A;
@@ -84,7 +84,7 @@ for SNR_db = [-20:1:20]
     % Decision algorithm for receive signal value
     r_norm = zeros(size(x));
     for i = 1:1:N
-        if r(i) > 0             % If positive
+        if x(i) > 0             % If positive
             r_norm(i) = A;
         else                    % If negative or 0
             r_norm(i) = -1 * A;
@@ -105,8 +105,8 @@ for SNR_db = [-20:1:20]
     Pe = incorrectReceive / N;
 
     % Add values to array
-    PeValues(SNR_db - 19) = Pe;
-    SNRValues(SNR_db - 19) = SNR_db;
+    PeValues(SNR_db + 21) = Pe;
+    SNRValues(SNR_db + 21) = SNR_db;
 end
 
 % Plot Probablity of Error vs SNR
@@ -117,7 +117,7 @@ xlabel("SNR (db)")
 ylabel("Probablity of Error (Pe)")
 
 %% Section 3.3
-N = 1000;
+N = 1000000;
 A = 5;
 x = A*((2*(randn(N,1)>0)) - 1); % Generates +A and -A; both equally likely
 y = 2*(randn(N,1)>0) - 1;   % Generates 1 and -1; both equally
@@ -126,7 +126,7 @@ y = 2*(randn(N,1)>0) - 1;   % Generates 1 and -1; both equally
                             % y axis
 
 % place data points on the x-y axis
-for i = 1:1:1000
+for i = 1:1:N
     if y(i) == 1        % if y = 1 place on y-axis
         y(i) = x(i);
         x(i) = 0;
@@ -144,36 +144,77 @@ title("Four Symbols Modal Data with A = 5");
 var_n = 0.01; % Noise variance
 n = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n
 m = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n
-r = x + n; % Received signal
-y = y + m; % create noise in y-axis
+% r = x + n; % Received signal
+% y = y + m; % create noise in y-axis
 
 % visualize modal data with four symbols with A = 5 and transmission noise
-figure;
-scatter(r,y);
-title("Four Symbol Modal Data with Noise Simulation");
+% figure;
+% scatter(r,y);
+% title("Four Symbol Modal Data with Noise Simulation");
 
 for SNR_db = [-20:1:20]     % vary SNR from -20 db to 20 db
     SNR = 10^(SNR_db/10);   % Calculate Linear SNR (X_db = 10*log(X))
     A = sqrt(SNR*var_n^2);  % Calculate value of A (SNR = (A^2)/(var_n^2))
     
-    % Create transmit data
-    x = A*(2*(randn(N,1)>0) - 1);  % Generates +A and -A randomly but equally likely
-
+    %Create transmit data
+    x = A*((2*(randn(N,1)>0)) - 1); % Generates +A and -A; both equally likely
+    y = 2*(randn(N,1)>0) - 1;   % Generates 1 and -1; both equally
+                                % this will be used to determine if
+                                % if A is placed on the x-axis or the
+                                % y axis
+                                   
+    % place data points on the x-y axis
+    for i = 1:1:N
+        if y(i) == 1        % if y = 1 place on y-axis
+            y(i) = x(i);
+            x(i) = 0;
+        elseif y(i) == -1   % if y = -1 place on x-axis
+            y(i) = 0;
+        end
+    end
     
+    x_noise = x + n; % Received signal
+    y_noise = y + m; % create noise in y-axis  
+    
+    % decision algorithm for four symbol 
+    for i = 1:1:N 
+        if ( (x_noise(i) > 0) && (y_noise(i) > x_noise(i))) || ((x_noise(i) < 0) && (y_noise(i) > -1 * x_noise(i)))
+            w(i) = A;
+            z(i) = 0;
+        elseif (x_noise(i) > 0 & y_noise(i) < -1 * x_noise(i)) | (x_noise(i) < 0 & y_noise(i) < x_noise(i))
+            w(i) = 0;
+            z(i) = -1 * A;
+        elseif (x_noise(i) > 0 & -1 * y_noise(i) > x_noise(i)) | (y_noise(i) < 0 && y_noise(i) > x_noise(i))
+            w(i) = -1 * A;
+            z(i) = 0;
+        elseif (y_noise(i) > 0 && y_noise(i) < x_noise(i)) | (y_noise(i) < 0 & -1 * y_noise(i) < x_noise(i))
+            w(i) = 0;
+            z(i) = A;
+        end
+    end
+    
+    % Find the number of incorrect guesses
+    incorrectReceive = 0;
+    for i = 1:1:N
+        if x(i) ~= z(i) || y(i) ~= w(i)
+            incorrectReceive = incorrectReceive + 1;
+        end
+    end
+    
+    % Compute the probability of error
+    Pe = incorrectReceive / N;
+
+    % Add values to array
+    PeValues(SNR_db + 21) = Pe;
+    SNRValues(SNR_db + 21) = SNR_db;
 end
 
-% for N = [1000 5000] %select a large enough value of N for a smooth curve
-%     for A = [0.01 1]  %TODO change to neeeded values
-%         x = A*((2*(randn(N,1)>0)) - 1); % Generates +A and -A; both equally likely
-%         y = 2*(randn(N,1)>0) - 1; % Generates 1 and -1; both equally
-%                                      % this will be used to determine if
-%                                      % if A is placed on the x-axis or the
-%                                      % y axis
-%
-%
-%     end
-%
-%
-% end
+% Plot Probablity of Error vs SNR
+figure;
+scatter(SNRValues, PeValues)
+title("Probablity of Error vs SNR Four Symbols")
+xlabel("SNR (db)")
+ylabel("Probablity of Error (Pe)")
+
 
 
