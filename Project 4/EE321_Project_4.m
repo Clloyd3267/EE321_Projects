@@ -70,7 +70,7 @@ Pe = incorrectReceive / N
 
 var_n = 0.01;  % Noise variance
 
-for SNR_db = [10:1:40]
+for SNR_db = [-20:1:20]
     SNR = 10^(SNR_db/10);   % Calculate Linear SNR (X_db = 10*log(X))
     A = sqrt(SNR*var_n^2);  % Calculate value of A (SNR = (A^2)/(var_n^2))
 
@@ -117,6 +117,7 @@ xlabel("SNR (db)")
 ylabel("Probablity of Error (Pe)")
 
 %%Section 3.3
+
 % N = 1000;
 % A = 5;
 % x = A*((2*(randn(N,1)>0)) - 1); % Generates +A and -A; both equally likely
