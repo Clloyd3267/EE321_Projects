@@ -6,10 +6,10 @@
 % Description : Data Classification using Matlab
 % ------------------------------------------------------------------------------
 
-%% Part 1 - (Fixed A) Working with received data (TX data + noise) for two data states
+%% Part 1 - (Fixed A) Working with received data (TX data + noise) for two data symbols
 
-% Clear the workspace and console
-clear; clc;
+% Clear the workspace, console, and close all figures
+clear; clc; close all;
 
 % Create transmit data
 N = 1000;                      % Number of symbols to be transmitted
@@ -28,7 +28,7 @@ n = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n
 r = x + n;                  % Received signal
 
 % Plot data on a scatter plot to visualize received symbols
-figure;
+figure
 scatter(r, zeros(size(r)))
 title("Received Signal For Part 1")
 xlabel("Amplitude (-A to +A)")
@@ -40,7 +40,7 @@ xlabel("Amplitude (-A to +A)")
 % Decision algorithm for receive signal value
 r_norm = zeros(size(x));
 for i = 1:1:N
-    if x(i) > 0             % If positive
+    if r(i) > 0             % If positive
         r_norm(i) = A;
     else                    % If negative or 0
         r_norm(i) = -1 * A;
@@ -66,8 +66,12 @@ end
 % Compute the probability of error
 Pe = incorrectReceive / N
 
-%% Part 2 - (Varied A) Working with received data (TX data + noise) for two data states
+%% Part 2 - (Varied A) Working with received data (TX data + noise) for two data symbols
 
+% Clear the workspace, console, and close all figures
+clear; clc; close all;
+
+N = 1000000;   % Number of symbols to be transmitted
 var_n = 0.01;  % Noise variance
 
 for SNR_db = [-20:1:20]
@@ -84,7 +88,7 @@ for SNR_db = [-20:1:20]
     % Decision algorithm for receive signal value
     r_norm = zeros(size(x));
     for i = 1:1:N
-        if x(i) > 0             % If positive
+        if r(i) > 0             % If positive
             r_norm(i) = A;
         else                    % If negative or 0
             r_norm(i) = -1 * A;
@@ -109,98 +113,170 @@ for SNR_db = [-20:1:20]
     SNRValues(SNR_db + 21) = SNR_db;
 end
 
-% Plot Probablity of Error vs SNR
+% Plot Probability of Error vs SNR
 figure
-scatter(SNRValues, PeValues)
-title("Probablity of Error vs SNR")
+semilogy(SNRValues, PeValues)
+title("Probability of Error vs SNR")
 xlabel("SNR (db)")
-ylabel("Probablity of Error (Pe)")
+ylabel("Probability of Error (Pe)")
 
-%% Section 3.3
-N = 1000000;
-A = 5;
-x = A*((2*(randn(N,1)>0)) - 1); % Generates +A and -A; both equally likely
-y = 2*(randn(N,1)>0) - 1;   % Generates 1 and -1; both equally
-                            % this will be used to determine if
-                            % if A is placed on the x-axis or the
-                            % y axis
+%% Part 3 - (Fixed A) Working with received data (TX data + noise) for four data symbols (on axis)
 
-% place data points on the x-y axis
+% Clear the workspace, console, and close all figures
+clear; clc; close all;
+
+% Create transmit data
+N = 1000000;                       % Number of symbols to be transmitted
+A = 5;                             % Data amplitude (relates to signal power)
+var_n = 0.01;                      % Noise variance
+tx_x = A*((2*(randn(N,1)>0)) - 1); % Generates +A and -A; both equally likely
+tx_y = 2*(randn(N,1)>0) - 1;       % Generates 1 and -1; both equally
+                                   % this will be used to determine if
+                                   % if A is placed on the x-axis or the
+                                   % y axis
+
+% Place data points on the x-y axis with one cooridnate always at 0
 for i = 1:1:N
-    if y(i) == 1        % if y = 1 place on y-axis
-        y(i) = x(i);
-        x(i) = 0;
-    elseif y(i) == -1   % if y = -1 place on x-axis
-        y(i) = 0;
+    if tx_y(i) == 1        % if y = 1 place on y-axis
+        tx_y(i) = tx_x(i);
+        tx_x(i) = 0;
+    elseif tx_y(i) == -1   % if y = -1 place on x-axis
+        tx_y(i) = 0;
     end
 end
 
-% visualize modal data with four symbols with A = 5
-figure;
-scatter(x,y);
-title("Four Symbols Modal Data with A = 5");
+% Plot data on a scatter plot to visualize transmitted symbols
+figure
+scatter(tx_x, tx_y)
+title("Transmit Signal For Part 3")
+xlabel("Amplitude (-A to +A)")
+ylabel("Amplitude (-A to +A)")
 
-% test noise simulation
-var_n = 0.01; % Noise variance
-n = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n
-m = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n
-% r = x + n; % Received signal
-% y = y + m; % create noise in y-axis
+% Generate received signal as transmit signal + noise
+n_x = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n x
+n_y = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n y
+rx_x = tx_x + n_x;            % Received x signal
+rx_y = tx_y + n_y;            % Received y signal
 
-% visualize modal data with four symbols with A = 5 and transmission noise
-% figure;
-% scatter(r,y);
-% title("Four Symbol Modal Data with Noise Simulation");
+% Plot data on a scatter plot to visualize received symbols
+figure
+scatter(rx_x, rx_y)
+title("Received Signal For Part 3")
+xlabel("Amplitude (-A to +A)")
+ylabel("Amplitude (-A to +A)")
 
-for SNR_db = [-20:1:20]     % vary SNR from -20 db to 20 db
+% Decision algorithm for receive signal value
+rx_norm_x = zeros(size(rx_x));
+rx_norm_y = zeros(size(rx_y));
+% Decision algorithm for receive signal value
+rx_norm_x = zeros(size(rx_x));
+rx_norm_y = zeros(size(rx_y));
+for i = 1:1:N
+    if ((rx_x(i) > 0) && (rx_y(i) > rx_x(i))) || ((rx_x(i) < 0) && (rx_y(i) > -1*rx_x(i)))      % Point A (0,A)
+        rx_norm_x(i) = 0;
+        rx_norm_y(i) = A;
+    elseif ((rx_x(i) > 0) && (rx_y(i) < -1*rx_x(i))) || ((rx_x(i) < 0) && (rx_y(i) < rx_x(i)))  % Point C (0,-A)
+        rx_norm_x(i) = 0;
+        rx_norm_y(i) = -1 * A;
+    elseif ((rx_y(i) > 0) && (rx_x(i) < -1*rx_y(i))) || ((rx_y(i) < 0) && (rx_x(i) < rx_y(i)))  % Point B (-A,0)
+        rx_norm_x(i) = -1 * A;
+        rx_norm_y(i) = 0;
+    elseif ((rx_y(i) > 0) && (rx_x(i) > rx_y(i))) || ((rx_y(i) < 0) && (rx_x(i) > -1*rx_y(i)))  % Point D (A,0)
+        rx_norm_x(i) = A;
+        rx_norm_y(i) = 0;
+    else  % On Axis CDL=> What now?
+        rx_norm_x(i) = 0;
+        rx_norm_y(i) = 0;
+    end
+end
+
+% Plot normalized receive data
+figure
+scatter(rx_norm_x, rx_norm_y)
+title("Normalized Receive Signal For Part 3")
+xlabel("Amplitude (-A to +A)")
+ylabel("Amplitude (-A to +A)")
+
+% Error Characterization
+
+% Find the number of incorrect guesses
+incorrectReceive = 0;
+for i = 1:1:N
+    if (tx_x(i) ~= rx_norm_x(i)) || (tx_y(i) ~= rx_norm_y(i))
+        incorrectReceive = incorrectReceive + 1;
+    end
+end
+
+% Compute the probability of error
+Pe = incorrectReceive / N
+
+%% Part 4 - (Varied A) Working with received data (TX data + noise) for four data symbols (on axis)
+
+% Clear the workspace, console, and close all figures
+clear; clc; close all;
+
+N = 1000000;   % Number of symbols to be transmitted
+var_n = 0.01;  % Noise variance
+
+for SNR_db = [-20:1:20]
     SNR = 10^(SNR_db/10);   % Calculate Linear SNR (X_db = 10*log(X))
     A = sqrt(SNR*var_n^2);  % Calculate value of A (SNR = (A^2)/(var_n^2))
-    
-    %Create transmit data
-    x = A*((2*(randn(N,1)>0)) - 1); % Generates +A and -A; both equally likely
-    y = 2*(randn(N,1)>0) - 1;   % Generates 1 and -1; both equally
-                                % this will be used to determine if
-                                % if A is placed on the x-axis or the
-                                % y axis
-                                   
-    % place data points on the x-y axis
+
+    % Create transmit data
+    tx_x = A*((2*(randn(N,1)>0)) - 1); % Generates +A and -A; both equally likely
+    tx_y = 2*(randn(N,1)>0) - 1;       % Generates 1 and -1; both equally
+                                       % this will be used to determine if
+                                       % if A is placed on the x-axis or the
+                                       % y axis
+
+    % Place data points on the x-y axis with one cooridnate always at 0
     for i = 1:1:N
-        if y(i) == 1        % if y = 1 place on y-axis
-            y(i) = x(i);
-            x(i) = 0;
-        elseif y(i) == -1   % if y = -1 place on x-axis
-            y(i) = 0;
+        if tx_y(i) == 1        % if y = 1 place on y-axis
+            tx_y(i) = tx_x(i);
+            tx_x(i) = 0;
+        elseif tx_y(i) == -1   % if y = -1 place on x-axis
+            tx_y(i) = 0;
         end
     end
-    
-    x_noise = x + n; % Received signal
-    y_noise = y + m; % create noise in y-axis  
-    
-    % decision algorithm for four symbol 
-    for i = 1:1:N 
-        if ( (x_noise(i) > 0) && (y_noise(i) > x_noise(i))) || ((x_noise(i) < 0) && (y_noise(i) > -1 * x_noise(i)))
-            w(i) = A;
-            z(i) = 0;
-        elseif (x_noise(i) > 0 & y_noise(i) < -1 * x_noise(i)) | (x_noise(i) < 0 & y_noise(i) < x_noise(i))
-            w(i) = 0;
-            z(i) = -1 * A;
-        elseif (x_noise(i) > 0 & -1 * y_noise(i) > x_noise(i)) | (y_noise(i) < 0 && y_noise(i) > x_noise(i))
-            w(i) = -1 * A;
-            z(i) = 0;
-        elseif (y_noise(i) > 0 && y_noise(i) < x_noise(i)) | (y_noise(i) < 0 & -1 * y_noise(i) < x_noise(i))
-            w(i) = 0;
-            z(i) = A;
+
+    % Generate received signal as transmit signal + noise
+    n_x = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n x
+    n_y = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n y
+    rx_x = tx_x + n_x;            % Received x signal
+    rx_y = tx_y + n_y;            % Received y signal
+
+    % Decision algorithm for receive signal value
+    rx_norm_x = zeros(size(rx_x));
+    rx_norm_y = zeros(size(rx_y));
+    for i = 1:1:N
+        if ((rx_x(i) > 0) && (rx_y(i) > rx_x(i))) || ((rx_x(i) < 0) && (rx_y(i) > -1*rx_x(i)))      % Point A (0,A)
+            rx_norm_x(i) = 0;
+            rx_norm_y(i) = A;
+        elseif ((rx_x(i) > 0) && (rx_y(i) < -1*rx_x(i))) || ((rx_x(i) < 0) && (rx_y(i) < rx_x(i)))  % Point C (0,-A)
+            rx_norm_x(i) = 0;
+            rx_norm_y(i) = -1 * A;
+        elseif ((rx_y(i) > 0) && (rx_x(i) < -1*rx_y(i))) || ((rx_y(i) < 0) && (rx_x(i) < rx_y(i)))  % Point B (-A,0)
+            rx_norm_x(i) = -1 * A;
+            rx_norm_y(i) = 0;
+        elseif ((rx_y(i) > 0) && (rx_x(i) > rx_y(i))) || ((rx_y(i) < 0) && (rx_x(i) > -1*rx_y(i)))  % Point D (A,0)
+            rx_norm_x(i) = A;
+            rx_norm_y(i) = 0;
+        else  % On Axis CDL=> What now?
+            rx_norm_x(i) = 0;
+            rx_norm_y(i) = 0;
         end
     end
-    
+
+    % Error Characterization
+
     % Find the number of incorrect guesses
     incorrectReceive = 0;
     for i = 1:1:N
-        if x(i) ~= z(i) || y(i) ~= w(i)
+        if (tx_x(i) ~= rx_norm_x(i)) || (tx_y(i) ~= rx_norm_y(i))
             incorrectReceive = incorrectReceive + 1;
         end
     end
-    
+
     % Compute the probability of error
     Pe = incorrectReceive / N;
 
@@ -209,12 +285,152 @@ for SNR_db = [-20:1:20]     % vary SNR from -20 db to 20 db
     SNRValues(SNR_db + 21) = SNR_db;
 end
 
-% Plot Probablity of Error vs SNR
-figure;
-scatter(SNRValues, PeValues)
-title("Probablity of Error vs SNR Four Symbols")
+% Plot Probability of Error vs SNR
+figure
+semilogy(SNRValues, PeValues)
+title("Probability of Error vs SNR for four symbols (part 4)")
 xlabel("SNR (db)")
-ylabel("Probablity of Error (Pe)")
+ylabel("Probability of Error (Pe)")
 
+%% Part 5 - (Fixed A) Working with received data (TX data + noise) for four data states (off axis)
 
+% Clear the workspace, console, and close all figures
+clear; clc; close all;
 
+% Create transmit data
+N = 10000000;                             % Number of symbols to be transmitted
+A = 1;                                    % Data amplitude (relates to signal power)
+var_n = 0.01;                             % Noise variance
+tx_x = A/sqrt(2)*(2*(randn(N,1)>0) - 1);  % Generates +A/sqrt(2) and -A/sqrt(2) randomly but equally likely
+tx_y = A/sqrt(2)*(2*(randn(N,1)>0) - 1);  % Generates +A/sqrt(2) and -A/sqrt(2) randomly but equally likely
+
+% Plot data on a scatter plot to visualize transmitted symbols
+figure
+scatter(tx_x, tx_y)
+title("Transmit Signal For Part 5")
+xlabel("Amplitude (-A/sqrt(2) to +A/sqrt(2))")
+ylabel("Amplitude (-A/sqrt(2) to +A/sqrt(2))")
+
+% Generate received signal as transmit signal + noise
+n_x = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n x
+n_y = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n y
+rx_x = tx_x + n_x;            % Received x signal
+rx_y = tx_y + n_y;            % Received y signal
+
+% Plot data on a scatter plot to visualize received symbols
+figure
+scatter(rx_x, rx_y)
+title("Received Signal For Part 5")
+xlabel("Amplitude (-A/sqrt(2) to +A/sqrt(2))")
+ylabel("Amplitude (-A/sqrt(2) to +A/sqrt(2))")
+
+% Decision algorithm for receive signal value
+rx_norm_x = zeros(size(rx_x));
+rx_norm_y = zeros(size(rx_y));
+for i = 1:1:N
+    if (rx_x(i) > 0) && (rx_y(i) > 0)      % Quadrant 1
+        rx_norm_x(i) = A/sqrt(2);
+        rx_norm_y(i) = A/sqrt(2);
+    elseif (rx_x(i) < 0) && (rx_y(i) > 0)  % Quadrant 2
+        rx_norm_x(i) = -1*A/sqrt(2);
+        rx_norm_y(i) = A/sqrt(2);
+    elseif (rx_x(i) < 0) && (rx_y(i) < 0)  % Quadrant 3
+        rx_norm_x(i) = -1*A/sqrt(2);
+        rx_norm_y(i) = -1*A/sqrt(2);
+    elseif (rx_x(i) > 0) && (rx_y(i) < 0)  % Quadrant 4
+        rx_norm_x(i) = A/sqrt(2);
+        rx_norm_y(i) = -1*A/sqrt(2);
+    else                                  % On Axis CDL=> What now?
+        rx_norm_x(i) = 0;
+        rx_norm_y(i) = 0;
+    end
+end
+
+% Plot normalized receive data
+figure
+scatter(rx_norm_x, rx_norm_y)
+title("Normalized Receive Signal For Part 5")
+xlabel("Amplitude (-A/sqrt(2) to +A/sqrt(2))")
+ylabel("Amplitude (-A/sqrt(2) to +A/sqrt(2))")
+
+% Error Characterization
+
+% Find the number of incorrect guesses
+incorrectReceive = 0;
+for i = 1:1:N
+    if (tx_x(i) ~= rx_norm_x(i)) || (tx_y(i) ~= rx_norm_y(i))
+        incorrectReceive = incorrectReceive + 1;
+    end
+end
+
+% Compute the probability of error
+Pe = incorrectReceive / N
+
+%% Part 6 - (Varied A) Working with received data (TX data + noise) for four data symbols (off axis)
+
+% Clear the workspace, console, and close all figures
+% clear; clc; close all;
+
+N = 1000000;   % Number of symbols to be transmitted
+var_n = 0.01;  % Noise variance
+
+for SNR_db = [-20:1:20]
+    SNR = 10^(SNR_db/10);   % Calculate Linear SNR (X_db = 10*log(X))
+    A = sqrt(SNR*var_n^2);  % Calculate value of A (SNR = (A^2)/(var_n^2))
+
+    % Create transmit data
+    tx_x = A/sqrt(2)*(2*(randn(N,1)>0) - 1);  % Generates +A/sqrt(2) and -A/sqrt(2) randomly but equally likely
+    tx_y = A/sqrt(2)*(2*(randn(N,1)>0) - 1);  % Generates +A/sqrt(2) and -A/sqrt(2) randomly but equally likely
+
+    % Generate received signal as transmit signal + noise
+    n_x = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n x
+    n_y = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n y
+    rx_x = tx_x + n_x;            % Received x signal
+    rx_y = tx_y + n_y;            % Received y signal
+
+    % Decision algorithm for receive signal value
+    rx_norm_x = zeros(size(rx_x));
+    rx_norm_y = zeros(size(rx_y));
+    for i = 1:1:N
+        if (rx_x(i) > 0) && (rx_y(i) > 0)      % Quadrant 1
+            rx_norm_x(i) = A/sqrt(2);
+            rx_norm_y(i) = A/sqrt(2);
+        elseif (rx_x(i) < 0) && (rx_y(i) > 0)  % Quadrant 2
+            rx_norm_x(i) = -1*A/sqrt(2);
+            rx_norm_y(i) = A/sqrt(2);
+        elseif (rx_x(i) < 0) && (rx_y(i) < 0)  % Quadrant 3
+            rx_norm_x(i) = -1*A/sqrt(2);
+            rx_norm_y(i) = -1*A/sqrt(2);
+        elseif (rx_x(i) > 0) && (rx_y(i) < 0)  % Quadrant 4
+            rx_norm_x(i) = A/sqrt(2);
+            rx_norm_y(i) = -1*A/sqrt(2);
+        else                                  % On Axis CDL=> What now?
+            rx_norm_x(i) = 0;
+            rx_norm_y(i) = 0;
+        end
+    end
+
+    % Error Characterization
+
+    % Find the number of incorrect guesses
+    incorrectReceive = 0;
+    for i = 1:1:N
+        if (tx_x(i) ~= rx_norm_x(i)) || (tx_y(i) ~= rx_norm_y(i))
+            incorrectReceive = incorrectReceive + 1;
+        end
+    end
+
+    % Compute the probability of error
+    Pe = incorrectReceive / N;
+
+    % Add values to array
+    PeValues(SNR_db + 21) = Pe;
+    SNRValues(SNR_db + 21) = SNR_db;
+end
+
+% Plot Probability of Error vs SNR
+figure
+semilogy(SNRValues, PeValues)
+title("Probability of Error vs SNR for four symbols (part 4)")
+xlabel("SNR (db)")
+ylabel("Probability of Error (Pe)")
