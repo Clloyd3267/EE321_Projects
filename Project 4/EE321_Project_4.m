@@ -12,9 +12,8 @@
 clear; clc; close all;
 
 % Create transmit data
-N = 1000;                      % Number of symbols to be transmitted
+N = 1000000;                   % Number of symbols to be transmitted
 A = 1;                         % Data amplitude (relates to signal power)
-var_n = 0.01;                  % Noise variance
 x = A*(2*(randn(N,1)>0) - 1);  % Generates +A and -A randomly but equally likely
 
 % Plot data on a scatter plot to visualize transmitted symbols
@@ -24,6 +23,7 @@ title("Transmit Signal For Part 1")
 xlabel("Amplitude (-A to +A)")
 
 % Generate received signal as transmit signal + noise
+var_n = 0.01;               % Noise variance
 n = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n
 r = x + n;                  % Received signal
 
@@ -32,10 +32,6 @@ figure
 scatter(r, zeros(size(r)))
 title("Received Signal For Part 1")
 xlabel("Amplitude (-A to +A)")
-
-% % Visualize data with r = 0 CDL=> Needed?
-% r = zeros(size(x));
-% plot(r);
 
 % Decision algorithm for receive signal value
 r_norm = zeros(size(x));
@@ -128,14 +124,13 @@ clear; clc; close all;
 % Create transmit data
 N = 1000000;                       % Number of symbols to be transmitted
 A = 5;                             % Data amplitude (relates to signal power)
-var_n = 0.01;                      % Noise variance
 tx_x = A*((2*(randn(N,1)>0)) - 1); % Generates +A and -A; both equally likely
 tx_y = 2*(randn(N,1)>0) - 1;       % Generates 1 and -1; both equally
                                    % this will be used to determine if
                                    % if A is placed on the x-axis or the
                                    % y axis
 
-% Place data points on the x-y axis with one cooridnate always at 0
+% Place data points on the x-y axis with one coordinate always at 0
 for i = 1:1:N
     if tx_y(i) == 1        % if y = 1 place on y-axis
         tx_y(i) = tx_x(i);
@@ -153,6 +148,7 @@ xlabel("Amplitude (-A to +A)")
 ylabel("Amplitude (-A to +A)")
 
 % Generate received signal as transmit signal + noise
+var_n = 0.01;                 % Noise variance
 n_x = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n x
 n_y = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n y
 rx_x = tx_x + n_x;            % Received x signal
@@ -165,9 +161,6 @@ title("Received Signal For Part 3")
 xlabel("Amplitude (-A to +A)")
 ylabel("Amplitude (-A to +A)")
 
-% Decision algorithm for receive signal value
-rx_norm_x = zeros(size(rx_x));
-rx_norm_y = zeros(size(rx_y));
 % Decision algorithm for receive signal value
 rx_norm_x = zeros(size(rx_x));
 rx_norm_y = zeros(size(rx_y));
@@ -184,9 +177,9 @@ for i = 1:1:N
     elseif ((rx_y(i) > 0) && (rx_x(i) > rx_y(i))) || ((rx_y(i) < 0) && (rx_x(i) > -1*rx_y(i)))  % Point D (A,0)
         rx_norm_x(i) = A;
         rx_norm_y(i) = 0;
-    else  % On Axis CDL=> What now?
+    else
         rx_norm_x(i) = 0;
-        rx_norm_y(i) = 0;
+        rx_norm_y(i) = A;
     end
 end
 
@@ -229,7 +222,7 @@ for SNR_db = [-20:1:20]
                                        % if A is placed on the x-axis or the
                                        % y axis
 
-    % Place data points on the x-y axis with one cooridnate always at 0
+    % Place data points on the x-y axis with one coordinate always at 0
     for i = 1:1:N
         if tx_y(i) == 1        % if y = 1 place on y-axis
             tx_y(i) = tx_x(i);
@@ -261,9 +254,9 @@ for SNR_db = [-20:1:20]
         elseif ((rx_y(i) > 0) && (rx_x(i) > rx_y(i))) || ((rx_y(i) < 0) && (rx_x(i) > -1*rx_y(i)))  % Point D (A,0)
             rx_norm_x(i) = A;
             rx_norm_y(i) = 0;
-        else  % On Axis CDL=> What now?
+        else
             rx_norm_x(i) = 0;
-            rx_norm_y(i) = 0;
+            rx_norm_y(i) = A;
         end
     end
 
@@ -300,7 +293,6 @@ clear; clc; close all;
 % Create transmit data
 N = 10000000;                             % Number of symbols to be transmitted
 A = 1;                                    % Data amplitude (relates to signal power)
-var_n = 0.01;                             % Noise variance
 tx_x = A/sqrt(2)*(2*(randn(N,1)>0) - 1);  % Generates +A/sqrt(2) and -A/sqrt(2) randomly but equally likely
 tx_y = A/sqrt(2)*(2*(randn(N,1)>0) - 1);  % Generates +A/sqrt(2) and -A/sqrt(2) randomly but equally likely
 
@@ -312,6 +304,7 @@ xlabel("Amplitude (-A/sqrt(2) to +A/sqrt(2))")
 ylabel("Amplitude (-A/sqrt(2) to +A/sqrt(2))")
 
 % Generate received signal as transmit signal + noise
+var_n = 0.01;                 % Noise variance
 n_x = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n x
 n_y = randn(N,1)*sqrt(var_n); % Zero-mean Gaussian noise with variance var_n y
 rx_x = tx_x + n_x;            % Received x signal
@@ -340,9 +333,9 @@ for i = 1:1:N
     elseif (rx_x(i) > 0) && (rx_y(i) < 0)  % Quadrant 4
         rx_norm_x(i) = A/sqrt(2);
         rx_norm_y(i) = -1*A/sqrt(2);
-    else                                  % On Axis CDL=> What now?
-        rx_norm_x(i) = 0;
-        rx_norm_y(i) = 0;
+    else
+        rx_norm_x(i) = A/sqrt(2);
+        rx_norm_y(i) = A/sqrt(2);
     end
 end
 
@@ -404,9 +397,9 @@ for SNR_db = [-20:1:20]
         elseif (rx_x(i) > 0) && (rx_y(i) < 0)  % Quadrant 4
             rx_norm_x(i) = A/sqrt(2);
             rx_norm_y(i) = -1*A/sqrt(2);
-        else                                  % On Axis CDL=> What now?
-            rx_norm_x(i) = 0;
-            rx_norm_y(i) = 0;
+        else
+            rx_norm_x(i) = A/sqrt(2);
+            rx_norm_y(i) = A/sqrt(2);
         end
     end
 
@@ -431,6 +424,6 @@ end
 % Plot Probability of Error vs SNR
 figure
 semilogy(SNRValues, PeValues)
-title("Probability of Error vs SNR for four symbols (part 4)")
+title("Probability of Error vs SNR for four symbols (part 6)")
 xlabel("SNR (db)")
 ylabel("Probability of Error (Pe)")
